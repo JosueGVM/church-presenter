@@ -1,0 +1,86 @@
+<div class="songs-layout">
+    <!-- COLUMNA 1: Catálogo de Canciones -->
+    <div class="songs-column catalog-column">
+        <div class="column-header">
+            <input type="text" id="catalog-search" placeholder="Buscar canciones...">
+            <button id="btn-create-song" class="btn-add-cat" title="Crear nueva canción">+</button>
+        </div>
+        <div class="column-scroll-container">
+            <ul id="catalog-list"></ul>
+        </div>
+    </div>
+
+    <!-- COLUMNA 2: Cronograma / Playlist de la Sesión -->
+    <div class="songs-column cronograma-column">
+        <div class="column-header-title">
+            <h3>Cronograma</h3>
+            <button id="btn-clear-cronograma" class="btn-clear" title="Vaciar Cronograma">Vaciar</button>
+        </div>
+        <div id="cronograma-drop-zone" class="column-scroll-container drop-zone">
+            <ul id="cronograma-list"></ul>
+        </div>
+    </div>
+
+    <!-- COLUMNA 3: Previsualizador de Diapositivas / Slides -->
+    <div class="songs-slides-column">
+        <div class="slides-header">
+            <h2 id="current-song-title">Selecciona una canción</h2>
+            <p id="current-song-author"></p>
+        </div>
+        <div class="slides-scroll-container">
+            <div id="slides-grid" class="slides-grid"></div>
+        </div>
+    </div>
+
+    <!-- OVERLAY MODAL: Editor de Canciones -->
+    <div id="song-editor-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Nueva Canción</h3>
+                <button id="btn-modal-close" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Lado Izquierdo: Formulario Principal -->
+                <div class="editor-form-left">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editor-title">Título:</label>
+                            <input type="text" id="editor-title" placeholder="Ej: Sublime Gracia">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editor-author">Autor / Grupo:</label>
+                            <input type="text" id="editor-author" placeholder="Ej: John Newton">
+                        </div>
+                        <div class="form-group">
+                            <label for="editor-category">Categoría:</label>
+                            <input type="text" id="editor-category" placeholder="Ej: Adoración">
+                        </div>
+                    </div>
+                    <div class="form-group lyrics-group">
+                        <label for="editor-lyrics">Letra (Usa doble salto de línea para separar diapositivas):</label>
+                        <textarea id="editor-lyrics" placeholder="[Intro]&#10;(Instrumental)&#10;&#10;[Estrofa 1]&#10;Sublime gracia del Señor..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- Lado Derecho: Barra de Asistencia de Etiquetas -->
+                <div class="editor-sidebar-right">
+                    <h4>Asistente</h4>
+                    <p>Selecciona un bloque de letra y haz clic en una sección para etiquetarlo:</p>
+                    <button class="btn-assist" data-tag="INTRO">Intro</button>
+                    <button class="btn-assist" data-tag="ESTROFA">Estrofa</button>
+                    <button class="btn-assist" data-tag="PRECORO">Precoro</button>
+                    <button class="btn-assist" data-tag="CORO">Coro</button>
+                    <button class="btn-assist" data-tag="PUENTE">Puente</button>
+                    <button class="btn-assist" data-tag="MUSICA">Música</button>
+                    <button class="btn-assist" data-tag="FINAL">Final</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-editor-cancel" class="btn danger">Cancelar</button>
+                <button id="btn-editor-save" class="btn primary">Guardar Canción</button>
+            </div>
+        </div>
+    </div>
+</div>

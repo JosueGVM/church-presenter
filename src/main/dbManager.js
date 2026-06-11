@@ -151,6 +151,55 @@ function saveSettings(settings) {
     }
 }
 
+// --- FUNCIONES PARA LA BASE DE DATOS DE CANCIONES (songs.db) ---
+
+// Buscar canciones en el catálogo (Filtra por título, letra o autor)
+function searchSongs(query) {
+    return new Promise((resolve, reject) => {
+        const sqlQuery = `SELECT * FROM songs WHERE title LIKE ? OR lyrics LIKE ? OR author LIKE ? ORDER BY title ASC`;
+        const param = `%${query}%`;
+        songsDb.all(sqlQuery, [param, param, param], (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
+}
+
+// Crear o actualizar una canción
+function saveSong(song) {
+    return new Promise((resolve, reject) => {
+        if (song.id) {
+            // Actualización (Update) de una canción existente
+            const stmt = songsDb.prepare(`UPDATE songs SET title = ?, lyrics = ?, author = ?, category = ? WHERE id = ?`);
+            stmt.run(song.title, song.lyrics, song.author, song.category, song.id, (err) => {
+                if (err) reject(err);
+                else resolve({ success: true, id: song.id });
+            });
+            stmt.finalize();
+        } else {
+            // Inserción (Insert) de una nueva canción
+            const stmt = songsDb.prepare(`INSERT INTO songs (title, lyrics, author, category) VALUES (?, ?, ?, ?)`);
+            stmt.run(song.title, song.lyrics, song.author, song.category, function(err) {
+                if (err) reject(err);
+                else resolve({ success: true, id: this.lastID }); // 'this.lastID' obtiene el ID autoincremental recién creado
+            });
+            stmt.finalize();
+        }
+    });
+}
+
+// Eliminar una canción del catálogo por su ID
+function deleteSong(id) {
+    return new Promise((resolve, reject) => {
+        const stmt = songsDb.prepare(`DELETE FROM songs WHERE id = ?`);
+        stmt.run(id, (err) => {
+            if (err) reject(err);
+            else resolve({ success: true });
+        });
+        stmt.finalize();
+    });
+}
+
 module.exports = {
     initDatabases,
     searchVerses,
@@ -158,6 +207,9 @@ module.exports = {
     getBooks,
     getSettings,
     saveSettings,
+    searchSongs,
+    saveSong,
+    deleteSong,
     getBiblesDb,
     getSongsDb
 };

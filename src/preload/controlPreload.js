@@ -12,5 +12,9 @@ contextBridge.exposeInMainWorld('api', {
 
     // Configuraciones de usuario (settings.json)
     getSettings: () => ipcRenderer.invoke('db:get-settings'),
-    saveSettings: (settings) => ipcRenderer.invoke('db:save-settings', settings)
+    saveSettings: (settings) => ipcRenderer.invoke('db:save-settings', settings),
+      // Consultas del catálogo de canciones (songs.db)
+    searchSongs: (query) => ipcRenderer.invoke('db:search-songs', query),
+    saveSong: (song) => ipcRenderer.invoke('db:save-song', song),
+    deleteSong: (id) => ipcRenderer.invoke('db:delete-song', id)
 });

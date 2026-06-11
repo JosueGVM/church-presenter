@@ -47,6 +47,20 @@ function setupIpcHandlers() {
     ipcMain.handle('db:save-settings', async (event, settings) => {
         return dbManager.saveSettings(settings);
     });
+
+    // 4. Manejadores para el catálogo de canciones (songs.db)
+    ipcMain.handle('db:search-songs', async (event, query) => {
+        return dbManager.searchSongs(query);
+    });
+
+    ipcMain.handle('db:save-song', async (event, song) => {
+        return dbManager.saveSong(song);
+    });
+
+    ipcMain.handle('db:delete-song', async (event, id) => {
+        return dbManager.deleteSong(id);
+    });
 }
+
 
 module.exports = { setupIpcHandlers };
