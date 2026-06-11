@@ -1,0 +1,40 @@
+<div class="bible-layout">
+    <!-- COLUMNA CENTRAL: Versiones, Título y Texto (Más angosta: flex 0.7) -->
+    <div class="bible-text-column">
+        <!-- Cabecera de Versiones de la Biblia -->
+        <div class="versions-header">
+            <button id="btn-prev-versions" class="ver-nav-btn" disabled>&lt;</button>
+            <div id="versions-container" class="versions-pills"></div>
+            <button id="btn-next-versions" class="ver-nav-btn" disabled>&gt;</button>
+        </div>
+
+        <!-- Título del Capítulo Activo -->
+        <div class="chapter-title-bar">
+            <h2 id="current-chapter-title">Génesis 1</h2>
+        </div>
+
+        <!-- Contenedor Scroll del Texto de la Biblia -->
+        <div class="bible-scroll-container">
+            <ul id="bible-text-list"></ul>
+        </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: Selector Visual Adaptativo (Libros, Capítulos y Versículos) -->
+    <div class="bible-selector-column">
+        <!-- Rejilla Fija de 66 Libros (6 filas de 11 columnas) -->
+        <div class="selector-section books-section">
+            <div id="books-grid" class="books-grid"></div>
+        </div>
+
+        <!-- Rejillas de Capítulos y Versículos (Se adaptan al 100% del alto) -->
+        <div class="selector-section bottom-grids-container">
+            <div class="grid-wrapper">
+                <div id="chapters-grid" class="chapters-grid"></div>
+            </div>
+
+            <div class="grid-wrapper">
+                <div id="verses-grid" class="verses-grid"></div>
+            </div>
+        </div>
+    </div>
+</div>

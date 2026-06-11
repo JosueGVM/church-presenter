@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e2e2e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Paleta clásica de artista -->
+  <path d="M12 22C17.52 22 22 17.52 22 12C22 6.47 17.52 2 12 2C6.47 2 2 6.47 2 12C2 14.72 3.09 17.19 4.85 19c.15.15.2.86.4 1h1.1c1-.006 1.168-1 1.168-1H9c.55 0 1-.45 1-1v-1a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1a1 1 0 0 0 1 1h1"></path>
+  <!-- Gotas de pintura interiores -->
+  <circle cx="7.5" cy="10.5" r="1.5" fill="#e2e2e7"></circle>
+  <circle cx="11.5" cy="7.5" r="1.5" fill="#e2e2e7"></circle>
+  <circle cx="16.5" cy="9.5" r="1.5" fill="#e2e2e7"></circle>
+  <circle cx="15.5" cy="14.5" r="1.5" fill="#e2e2e7"></circle>
+</svg>

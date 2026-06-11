@@ -1,0 +1,292 @@
+.bible-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    gap: 15px;
+    padding: 15px;
+}
+
+/* ================= COLUMNA CENTRAL (VISOR - ANCHO FIJO DE 340PX) ================= */
+.bible-text-column {
+    width: 340px;
+    min-width: 340px;
+    max-width: 340px; /* Ancho siempre idéntico, no adaptativo */
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Cabecera de Versiones */
+.versions-header {
+    background-color: #16161b;
+    border-bottom: 1px solid var(--border-color);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+}
+
+.versions-pills {
+    display: flex;
+    gap: 6px;
+    flex-grow: 1;
+}
+
+.ver-pill {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.ver-pill:hover {
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.ver-pill.active {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.ver-nav-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.ver-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Título */
+.chapter-title-bar {
+    padding: 12px 20px;
+    background-color: rgba(255, 255, 255, 0.01);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chapter-title-bar h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    transition: color 0.2s ease; /* Transición suave al cambiar de color de libro */
+}
+
+/* Visor del texto */
+.bible-scroll-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+}
+
+/* DISEÑO DE SCROLLBAR DELGADA Y MINIMALISTA */
+.bible-scroll-container::-webkit-scrollbar {
+    width: 6px; /* Muy delgada */
+}
+
+.bible-scroll-container::-webkit-scrollbar-track {
+    background: transparent; /* Fondo transparente */
+}
+
+.bible-scroll-container::-webkit-scrollbar-thumb {
+    background-color: var(--border-color); /* Color del indicador */
+    border-radius: 10px;
+}
+
+.bible-scroll-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent); /* Se ilumina en azul al pasar el mouse */
+}
+
+#bible-text-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#bible-text-list li {
+    padding: 12px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    transition: background-color 0.15s ease;
+    outline: none;
+}
+
+#bible-text-list li:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Resaltado del versículo seleccionado */
+#bible-text-list li.selected {
+    background-color: rgba(255, 255, 255, 0.04);
+    /* El color de la barra izquierda se aplicará dinámicamente mediante JS */
+}
+
+/* INDICADOR "EN VIVO" EN EL VISOR CENTRAL */
+#bible-text-list li.live {
+    background-color: rgba(0, 122, 204, 0.12) !important;
+    border-left-color: var(--accent) !important; /* Resalta con el color de acento azul */
+}
+
+#bible-text-list li strong {
+    color: var(--accent);
+    margin-right: 8px;
+    font-size: 13px;
+}
+
+
+/* ================= COLUMNA DERECHA (SELECTOR) ================= */
+.bible-selector-column {
+    flex: 1; /* Crece para llenar el resto de la pantalla de forma adaptativa */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.selector-section {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Mitad Superior: Libros (Ocupa exactamente el 50% vertical) */
+.books-section {
+    height: calc(50% - 7.5px); /* 50% exacto considerando el gap de 15px */
+}
+
+/* Rejilla de Libros (11 columnas exactas y SIN SCROLLS) */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 4px;
+    flex-grow: 1;
+    overflow: hidden; /* Desactiva scrollbar vertical/horizontal */
+}
+
+.book-tile {
+    aspect-ratio: 1;
+    background-color: var(--bg-main);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transition: filter 0.15s ease, transform 0.1s ease;
+    overflow: hidden;
+}
+
+.book-tile:hover {
+    filter: brightness(1.2);
+    transform: scale(1.02);
+}
+
+.book-tile.active {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+}
+
+.book-tile .abbr {
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.book-tile .full-name {
+    font-size: 7.5px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 1px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 95%;
+}
+
+/* Mitad Inferior: Capítulos y Versículos (Ocupa el otro 50% vertical) */
+.bottom-grids-container {
+    height: calc(50% - 7.5px); /* 50% exacto */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.grid-wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+/* Rejillas dinámicas de Capítulos y Versículos SIN SCROLLBARS */
+.chapters-grid, .verses-grid {
+    display: grid;
+    gap: 4px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Desactiva scrollbars completamente */
+    box-sizing: border-box;
+}
+
+/* Celdas numéricas */
+.num-tile {
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+
+.num-tile:hover {
+    filter: brightness(1.1);
+}
+
+.num-tile.active {
+    border-color: #fff !important; /* Borde blanco nítido para la celda seleccionada */
+    font-weight: bold;
+}
+
+/* INDICADOR "EN VIVO" EN LA REJILLA DE VERSÍCULOS */
+.num-tile.live {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    font-weight: bold;
+    color: #fff;
+}

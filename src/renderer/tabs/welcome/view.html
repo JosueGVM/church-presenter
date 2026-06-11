@@ -1,0 +1,97 @@
+<div class="welcome-container">
+    <h2 class="welcome-title">Bienvenido a Church Display</h2>
+    <p class="welcome-subtitle">Usa el menú lateral izquierdo para navegar entre las distintas herramientas:</p>
+
+    <!-- Lista de tarjetas de tutorial apuntando hacia la izquierda -->
+    <div class="tutorial-list">
+        
+        <div class="tutorial-card">
+            <span class="arrow-indicator">←</span>
+            <div class="card-icon">
+                <img src="../assets/icons/bible.svg" alt="Biblia">
+            </div>
+            <div class="card-content">
+                <h4>Modo Biblia</h4>
+                <p>Busca libros, capítulos y versículos de tu base de datos en orden bíblico y proyéctalos con doble clic.</p>
+            </div>
+        </div>
+
+        <div class="tutorial-card">
+            <span class="arrow-indicator">←</span>
+            <div class="card-icon">
+                <img src="../assets/icons/songs.svg" alt="Canciones">
+            </div>
+            <div class="card-content">
+                <h4>Modo Canciones</h4>
+                <p>Organiza e ingresa letras de canciones estructuradas por secciones coloreadas (Coro, Estrofas, etc.).</p>
+            </div>
+        </div>
+
+        <div class="tutorial-card">
+            <span class="arrow-indicator">←</span>
+            <div class="card-icon">
+                <img src="../assets/icons/media.svg" alt="Multimedia">
+            </div>
+            <div class="card-content">
+                <h4>Modo Multimedia</h4>
+                <p>Gestiona y cambia los fondos de video en bucle o imágenes estáticas que se mostrarán en la proyección.</p>
+            </div>
+        </div>
+
+        <div class="tutorial-card">
+            <span class="arrow-indicator">←</span>
+            <div class="card-icon">
+                <img src="../assets/icons/notes.svg" alt="Notas">
+            </div>
+            <div class="card-content">
+                <h4>Notas Rápidas</h4>
+                <p>Escribe anuncios, avisos o textos personalizados al instante en pantalla sin afectar otras lecturas.</p>
+            </div>
+        </div>
+
+        <div class="tutorial-card">
+            <span class="arrow-indicator">←</span>
+            <div class="card-icon">
+                <img src="../assets/icons/themes.svg" alt="Temas">
+            </div>
+            <div class="card-content">
+                <h4>Configurador de Temas</h4>
+                <p>Personaliza las tipografías, colores de letras, sombras de texto y alineaciones para tu pantalla de proyección.</p>
+            </div>
+        </div>
+
+        <div class="tutorial-card">
+            <span class="arrow-indicator">←</span>
+            <div class="card-icon">
+                <img src="../assets/icons/settings.svg" alt="Configuración">
+            </div>
+            <div class="card-content">
+                <h4>Configuración General</h4>
+                <p>Gestiona las pantallas del sistema, detecta nuevos monitores y ajusta las preferencias globales de la app.</p>
+            </div>
+        </div>
+
+        <!-- Tarjeta de Configuración de Inicio Persistente -->
+        <div class="tutorial-card settings-card">
+            <div class="card-content" style="width: 100%;">
+                <h4>⚙️ Modo de Inicio por Defecto</h4>
+                <p>Configura qué pantalla deseas ver de forma automática cada vez que abras Church Display:</p>
+                
+                <div class="settings-form">
+                    <select id="select-start-tab">
+                        <option value="welcome">Mostrar este Tutorial de Inicio</option>
+                        <option value="bible">Ir directo al Modo Biblia</option>
+                        <option value="songs">Ir directo al Modo Canciones (Próximamente)</option>
+                        <option value="media">Ir directo al Modo Multimedia (Próximamente)</option>
+                        <option value="notes">Ir directo al Modo Notas (Próximamente)</option>
+                        <option value="themes">Ir directo al Configurador de Temas (Próximamente)</option>
+                        <option value="settings">Ir directo a Configuración General (Próximamente)</option>
+                    </select>
+                    <button id="btn-save-start" class="btn primary">Guardar Preferencia</button>
+                </div>
+                <div id="save-status" class="status-msg"></div>
+            </div>
+        </div>
+
+    </div>
+</div>

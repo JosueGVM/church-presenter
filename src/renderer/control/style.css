@@ -1,0 +1,117 @@
+/* Variables de diseño globales */
+:root {
+    --bg-main: #131316;
+    --bg-sidebar: #1a1a20;
+    --bg-card: #23232a;
+    --border-color: #2f2f3a;
+    --text-primary: #e2e2e7;
+    --text-secondary: #a1a1aa;
+    --accent: #007acc;
+    --accent-hover: #005999;
+    --danger: #d9534f;
+    --sidebar-width: 60px;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* Sidebar Fijo */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100%;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 0;
+    box-sizing: border-box;
+    gap: 12px;
+}
+
+.sidebar-separator {
+    width: 30px;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 4px 0;
+}
+
+.sidebar-spacer {
+    flex-grow: 1; /* Empuja el botón de configuración hacia abajo */
+}
+
+/* Botones de Navegación */
+.nav-btn {
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    position: relative;
+}
+
+.nav-btn img {
+    width: 24px;
+    height: 24px;
+    opacity: 0.5; /* Icono opaco apagado por defecto */
+    transition: opacity 0.2s ease;
+}
+
+/* Hover */
+.nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-btn:hover img {
+    opacity: 0.8;
+}
+
+/* Estado Activo (Pestaña Seleccionada) */
+.nav-btn.active {
+    background-color: rgba(0, 122, 204, 0.15);
+}
+
+.nav-btn.active img {
+    opacity: 1; /* Iluminación total del icono */
+}
+
+/* Indicador luminoso vertical a la izquierda */
+.nav-btn.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 3px;
+    height: 20px;
+    background-color: var(--accent);
+    border-radius: 0 4px 4px 0;
+}
+
+/* Área de contenido dinámico */
+.content-area {
+    flex-grow: 1;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--bg-main);
+}

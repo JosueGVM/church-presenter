@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Church Display - Control</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- El archivo CSS de la pestaña activa se inyectará aquí dinámicamente -->
+    <link id="tab-stylesheet" rel="stylesheet" href="">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Fijo (Solo iconos SVG) -->
+        <aside class="sidebar">
+            <button class="nav-btn" data-tab="welcome" title="Inicio / Tutorial">
+                <img src="../assets/icons/notes.svg" alt="Inicio">
+            </button>
+            <div class="sidebar-separator"></div>
+            
+            <button class="nav-btn" data-tab="bible" title="Modo Biblia">
+                <img src="../assets/icons/bible.svg" alt="Biblia">
+            </button>
+            
+            <button class="nav-btn" data-tab="songs" title="Modo Canciones">
+                <img src="../assets/icons/songs.svg" alt="Canciones">
+            </button>
+            
+            <button class="nav-btn" data-tab="media" title="Modo Multimedia">
+                <img src="../assets/icons/media.svg" alt="Multimedia">
+            </button>
+            
+            <button class="nav-btn" data-tab="notes" title="Modo Notas">
+                <img src="../assets/icons/notes.svg" alt="Notas">
+            </button>
+            
+            <button class="nav-btn" data-tab="themes" title="Configurar Temas">
+                <img src="../assets/icons/themes.svg" alt="Temas">
+            </button>
+            
+            <div class="sidebar-spacer"></div> <!-- Empuja la configuración al fondo -->
+            
+            <button class="nav-btn" data-tab="settings" title="Configuración General">
+                <img src="../assets/icons/settings.svg" alt="Configuración">
+            </button>
+        </aside>
+
+        <!-- Área de Contenido Dinámico -->
+        <main id="main-content" class="content-area">
+            <!-- Aquí se inyectará el HTML de la pestaña activa -->
+        </main>
+    </div>
+
+    <!-- Cargamos el script como módulo ES para permitir importaciones dinámicas -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
