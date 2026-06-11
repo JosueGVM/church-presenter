@@ -1,0 +1,27 @@
+# Dependencias de Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Compilados y empaquetados finales (Electron-builder)
+dist/
+out/
+
+# Archivos de bases de datos locales y configuraciones personales
+database/*.db
+database/*.sqlite
+database/*.json
+!database/.gitkeep
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Configuraciones del editor de código
+.vscode/
+.idea/
+*.suo
+*.ntvs
+*.njsproj
+*.sln
