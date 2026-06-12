@@ -1,0 +1,70 @@
+<div class="notes-layout">
+    <!-- COLUMNA 1: Catálogo de Bosquejos Guardados (Avisos / Sermones) -->
+    <div class="notes-column catalog-column">
+        <div class="column-header">
+            <input type="text" id="notes-search" placeholder="Buscar notas...">
+            <button id="btn-create-note" class="btn-add-cat" title="Crear nuevo bosquejo">+</button>
+        </div>
+        <div class="column-scroll-container">
+            <ul id="notes-catalog-list"></ul>
+        </div>
+    </div>
+
+    <!-- COLUMNA 2: El Editor en Vivo (Sustituye al Cronograma) -->
+    <div class="notes-column editor-column">
+        <div class="column-header-title">
+            <h3 id="editor-header-title">Editar Bosquejo</h3>
+            <button id="btn-delete-note" class="btn-clear" title="Eliminar de la Base de Datos" disabled>Eliminar</button>
+        </div>
+        <div class="column-scroll-container live-editor-form">
+            <!-- Campos de Metadatos -->
+            <div class="form-group">
+                <label for="note-title-input">Título del Estudio:</label>
+                <input type="text" id="note-title-input" placeholder="Ej: Las Bienaventuranzas">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="note-author-input">Orador:</label>
+                    <input type="text" id="note-author-input" placeholder="Ej: Pastor Pablo">
+                </div>
+                <div class="form-group">
+                    <label for="note-category-input">Categoría:</label>
+                    <input type="text" id="note-category-input" placeholder="Ej: Mateo">
+                </div>
+            </div>
+
+            <!-- NUEVO CAMPO DE FECHA EN EL FORMULARIO (SOLO LECTURA) -->
+            <div class="form-group">
+                <label for="note-date-input">Fecha de Creación:</label>
+                <input type="text" id="note-date-input" readonly disabled style="opacity: 0.6; cursor: not-allowed; background-color: #101014;">
+            </div>
+
+            <!-- Cuerpo del Bosquejo -->
+            <div class="form-group lyrics-group">
+                <label for="note-live-editor">Contenido (Usa doble salto de línea para separar diapositivas):</label>
+                <textarea id="note-live-editor" placeholder="Escribe tu bosquejo de estudio bíblico aquí...&#10;&#10;Separando los bloques con doble salto de línea."></textarea>
+            </div>
+            
+            <div class="editor-actions">
+                <button id="btn-save-note" class="btn primary">Guardar en Base de Datos</button>
+                <button id="btn-clear-note-proj" class="btn danger">Limpiar Pantalla (ESC)</button>
+            </div>
+
+            <!-- NUEVO CONTENEDOR DE ESTADO INTEGRADO EN LA EDICIÓN -->
+            <div id="notes-save-status" class="status-msg" style="margin-top: 10px; font-size: 13px; font-weight: bold; text-align: center; height: 18px;"></div>
+
+        </div>
+    </div>
+
+    <!-- COLUMNA 3: Previsualizador Dinámico de Diapositivas 16:9 -->
+    <div class="notes-slides-column">
+        <div class="preview-header">
+            <h2>Vista Previa del Bosquejo</h2>
+            <p>Se genera dinámicamente en tiempo real a medida que escribes en la columna central.</p>
+        </div>
+        <div class="slides-scroll-container">
+            <div id="notes-slides-grid" class="slides-grid"></div>
+        </div>
+    </div>
+</div>

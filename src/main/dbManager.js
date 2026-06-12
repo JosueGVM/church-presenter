@@ -13,6 +13,7 @@ const DB_DIR = app.isPackaged
 
 const BIBLES_DB_PATH = path.join(DB_DIR, 'bibles.db');
 const SONGS_DB_PATH = path.join(DB_DIR, 'songs.db');
+const NOTES_DB_PATH = path.join(DB_DIR, 'notes.db');
 const SETTINGS_JSON_PATH = path.join(DB_DIR, 'settings.json');
 
 // Carpetas de Medios Portátiles
@@ -65,6 +66,39 @@ function initDatabases() {
                 author TEXT,
                 category TEXT
             )`);
+        }
+    });
+
+    // 3. Conexión a la Base de Datos de Notas Rápidas
+    notesDb = new sqlite3.Database(NOTES_DB_PATH, (err) => {
+        if (err) {
+            console.error('Error al conectar con notes.db:', err.message);
+        } else {
+            console.log('Conectado a notes.db con éxito.');
+            // Crear tabla de notas rápidas si no existe
+            notesDb.run(`CREATE TABLE IF NOT EXISTS quick_notes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL
+            )`);
+            // Crear tabla de notas rápidas si no existe
+            notesDb.run(`CREATE TABLE IF NOT EXISTS quick_notes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL
+            )`);
+
+            // --- AGREGAR CREACIÓN DE TABLA DE NOTAS DE SERMÓN ---
+            notesDb.run(`CREATE TABLE IF NOT EXISTS sermon_notes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL,
+                author TEXT,
+                category TEXT
+            )`);
+            notesDb.run(`ALTER TABLE sermon_notes ADD COLUMN created_at TEXT`, (err) => {
+                // Es seguro ignorar el error si la columna ya existe de fábrica
+            });
         }
     });
 }
@@ -315,6 +349,95 @@ function scanFontsFolder() {
     }
 }
 
+// --- GESTIÓN DE NOTAS RÁPIDAS (notes.db) ---
+
+// Obtener todas las notas rápidas guardadas en la base de datos
+function getQuickNotes() {
+    return new Promise((resolve, reject) => {
+        notesDb.all(`SELECT * FROM quick_notes ORDER BY title ASC`, [], (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
+}
+
+// Guardar (crear o actualizar) una nota rápida
+function saveQuickNote(note) {
+    return new Promise((resolve, reject) => {
+        if (note.id) {
+            // Editar nota existente
+            const stmt = notesDb.prepare(`UPDATE quick_notes SET title = ?, content = ? WHERE id = ?`);
+            stmt.run(note.title, note.content, note.id, (err) => {
+                if (err) reject(err);
+                else resolve({ success: true, id: note.id });
+            });
+            stmt.finalize();
+        } else {
+            // Crear nota nueva
+            const stmt = notesDb.prepare(`INSERT INTO quick_notes (title, content) VALUES (?, ?)`);
+            stmt.run(note.title, note.content, function(err) {
+                if (err) reject(err);
+                else resolve({ success: true, id: this.lastID });
+            });
+            stmt.finalize();
+        }
+    });
+}
+
+// Eliminar físicamente una nota del catálogo por su ID
+function deleteQuickNote(id) {
+    return new Promise((resolve, reject) => {
+        const stmt = notesDb.prepare(`DELETE FROM quick_notes WHERE id = ?`);
+        stmt.run(id, (err) => {
+            if (err) reject(err);
+            else resolve({ success: true });
+        });
+        stmt.finalize();
+    });
+}
+
+function getSermonNotes() {
+    return new Promise((resolve, reject) => {
+        notesDb.all(`SELECT * FROM sermon_notes ORDER BY title ASC`, [], (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
+}
+
+function saveSermonNote(note) {
+    return new Promise((resolve, reject) => {
+        if (note.id) {
+            // ACTUALIZACIÓN: Excluimos 'created_at' para que la fecha original nunca se modifique
+            const stmt = notesDb.prepare(`UPDATE sermon_notes SET title = ?, content = ?, author = ?, category = ? WHERE id = ?`);
+            stmt.run(note.title, note.content, note.author, note.category, note.id, (err) => {
+                if (err) reject(err);
+                else resolve({ success: true, id: note.id });
+            });
+            stmt.finalize();
+        } else {
+            // INSERCIÓN: Aquí sí guardamos el campo 'created_at' de creación
+            const stmt = notesDb.prepare(`INSERT INTO sermon_notes (title, content, author, category, created_at) VALUES (?, ?, ?, ?, ?)`);
+            stmt.run(note.title, note.content, note.author, note.category, note.created_at, function(err) {
+                if (err) reject(err);
+                else resolve({ success: true, id: this.lastID });
+            });
+            stmt.finalize();
+        }
+    });
+}
+
+function deleteSermonNote(id) {
+    return new Promise((resolve, reject) => {
+        const stmt = notesDb.prepare(`DELETE FROM sermon_notes WHERE id = ?`);
+        stmt.run(id, (err) => {
+            if (err) reject(err);
+            else resolve({ success: true });
+        });
+        stmt.finalize();
+    });
+}
+
 module.exports = {
     initDatabases,
     searchVerses,
@@ -330,6 +453,12 @@ module.exports = {
     importMediaFile,
     deleteMediaFile,
     scanFontsFolder,
+    getQuickNotes,
+    saveQuickNote,
+    deleteQuickNote,
+    getSermonNotes,
+    saveSermonNote,
+    deleteSermonNote,
     getBiblesDb,
     getSongsDb
 };

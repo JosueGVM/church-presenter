@@ -8,8 +8,27 @@ const projTitleBarBottom = document.getElementById('proj-title-bar-bottom');
 const projTitleInlineTop = document.getElementById('proj-title-inline-top');
 const projTitleInlineBottom = document.getElementById('proj-title-inline-bottom');
 
+const projAlertBanner = document.getElementById('proj-alert-banner');
+
 window.api.alActualizarProyeccion((datos) => {
     console.log("[Proyector Debug] Datos recibidos en tiempo real:", datos);
+
+    // --- AGREGAR CONTROL DEL CINTILLO DE ALERTAS (FAJA) ---
+    if (datos.alertText !== undefined) {
+        if (datos.alertText) {
+            projAlertBanner.textContent = datos.alertText;
+            projAlertBanner.style.display = 'block';
+        } else {
+            projAlertBanner.style.display = 'none';
+            projAlertBanner.textContent = '';
+        }
+    }
+
+    // Si se pide explícitamente apagar la alerta por separado
+    if (datos.clearAlert) {
+        projAlertBanner.style.display = 'none';
+        projAlertBanner.textContent = '';
+    }
 
     // 1. MANEJAR LA CAPA DE FONDO MULTIMEDIA
     if (datos.background) {
@@ -172,6 +191,9 @@ window.api.alLimpiarPantalla(() => {
     projTitleBarBottom.style.display = 'none';
     projTitleInlineTop.style.display = 'none';
     projTitleInlineBottom.style.display = 'none';
+
+    projAlertBanner.style.display = 'none';
+    projAlertBanner.textContent = '';
 
     clearActiveBackgrounds();
 });

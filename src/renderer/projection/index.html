@@ -10,28 +10,31 @@
 <body>
 
     <div class="display-container">
-    <!-- CAPA DE FONDO -->
-    <video id="proj-bg-video" class="proj-bg" loop muted style="display: none;"></video>
-    <img id="proj-bg-image" class="proj-bg" style="display: none;">
+        <!-- CAPA DE FONDO -->
+        <video id="proj-bg-video" class="proj-bg" loop muted style="display: none;"></video>
+        <img id="proj-bg-image" class="proj-bg" style="display: none;">
 
-    <!-- Posiciones de Título Fijas de Ancho Completo en Proyector -->
-    <div id="proj-title-bar-top" class="proj-title-bar-full" style="display: none;"></div>
+        <!-- Posiciones de Título Fijas de Ancho Completo en Proyector -->
+        <div id="proj-title-bar-top" class="proj-title-bar-full" style="display: none;"></div>
 
-    <!-- Contenedor Flexbox de Alineación de Texto -->
-    <div id="proj-text-overlay" class="proj-text-overlay">
-        <!-- Caja de relleno de texto única (Bounding Box) -->
-        <div id="proj-text-box" class="proj-text-box">
-            <!-- Posiciones de Título Fijas Internas (Flotantes) -->
-            <div id="proj-title-inline-top" class="proj-title-inline" style="display: none;"></div>
-            
-            <div id="texto-proyectado"></div>
-            
-            <div id="proj-title-inline-bottom" class="proj-title-inline" style="display: none;"></div>
+        <!-- Contenedor Flexbox de Alineación de Texto -->
+        <div id="proj-text-overlay" class="proj-text-overlay">
+            <!-- Caja de relleno de texto única (Bounding Box) -->
+            <div id="proj-text-box" class="proj-text-box">
+                <!-- Posiciones de Título Fijas Internas (Flotantes) -->
+                <div id="proj-title-inline-top" class="proj-title-inline" style="display: none;"></div>
+
+                <div id="texto-proyectado"></div>
+
+                <div id="proj-title-inline-bottom" class="proj-title-inline" style="display: none;"></div>
+            </div>
         </div>
-    </div>
 
-    <div id="proj-title-bar-bottom" class="proj-title-bar-full" style="display: none;"></div>
-</div>
+        <div id="proj-title-bar-bottom" class="proj-title-bar-full" style="display: none;"></div>
+
+        <!-- CAPA DELANTERA DE ALERTAS (Z-INDEX SUPERIOR) -->
+        <div id="proj-alert-banner" style="display: none;"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>

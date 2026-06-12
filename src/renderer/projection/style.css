@@ -105,3 +105,24 @@
     text-align: center;
     margin-bottom: 12px;
 }
+
+/* FAJA / CINTILLO DE ALERTAS FLOTANTES EN PROYECTOR (Capa 10) */
+#proj-alert-banner {
+    position: absolute;
+    bottom: 5vh; /* Se posiciona sutilmente arriba del borde inferior */
+    left: 5%;
+    width: 90%;
+    background-color: rgba(19, 19, 22, 0.92); /* Negro profundo traslúcido */
+    border: 1px solid var(--border-color);
+    border-left: 6px solid #d9534f; /* Borde rojo nítido de alerta */
+    color: #ffffff;
+    font-size: 3vh; /* Letra grande y legible */
+    font-weight: bold;
+    padding: 1.5vh 3vh;
+    border-radius: 8px;
+    text-align: center;
+    z-index: 10; /* Encima de todo lo demás */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    box-sizing: border-box;
+    transition: opacity 0.3s ease-in-out;
+}

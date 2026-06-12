@@ -1,0 +1,87 @@
+<div class="notes-layout">
+    <!-- COLUMNA 1: Catálogo de Avisos Guardados -->
+    <div class="notes-column catalog-column">
+        <div class="column-header-title">
+            <h3>Avisos Guardados</h3>
+            <button id="btn-create-note" class="btn-add-cat" title="Guardar nuevo aviso">+</button>
+        </div>
+        <div class="column-scroll-container">
+            <ul id="notes-catalog-list"></ul>
+        </div>
+    </div>
+
+    <!-- COLUMNA 2: Editor en Vivo y Botonera de Envío -->
+    <div class="notes-column editor-column">
+        <div class="column-header-title">
+            <h3>Editor en Vivo</h3>
+        </div>
+        <div class="column-scroll-container live-editor-form">
+            <div class="form-group lyrics-group">
+                <label for="note-live-editor">Redactar aviso / nota rápida:</label>
+                <textarea id="note-live-editor" placeholder="Escribe un anuncio o aviso urgente aquí..."></textarea>
+            </div>
+            
+            <div class="editor-actions">
+                <button id="btn-project-banner" class="btn secondary">Proyectar como Banner</button>
+                <button id="btn-project-fullscreen" class="btn primary">Proyectar Completa</button>
+                <button id="btn-clear-note-proj" class="btn danger">Limpiar Pantalla</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COLUMNA 3: Previsualizador del Avisador con Doble Pantalla en Vivo -->
+    <div class="notes-preview-column">
+        <div class="preview-header">
+            <h2>Vista Previa del Aviso</h2>
+            <p>Se actualiza en tiempo real mostrando ambos formatos simultáneamente.</p>
+        </div>
+        
+        <div class="preview-display-container">
+            <!-- PANTALLA 1: Vista previa de Diapositiva Completa -->
+            <div class="preview-box-wrapper">
+                <h4>Proyección Pantalla Completa</h4>
+                <div id="note-preview-box-fullscreen" class="note-preview-box">
+                    <span class="slide-live-badge">En Vivo</span>
+                    <div id="preview-note-text-overlay" class="preview-note-text-overlay">
+                        <div id="preview-note-text-box" class="preview-text-box" style="width: 100%; display: flex; justify-content: center;">
+                            <div id="preview-note-text-content">Escribe un aviso...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANTALLA 2: Vista previa del Banner de Alerta -->
+            <div class="preview-box-wrapper">
+                <h4>Proyección en Banner (Franja)</h4>
+                <div id="note-preview-box-banner" class="note-preview-box" style="background-color: #1a1a20;">
+                    <span class="slide-live-badge">En Vivo</span>
+                    <div id="preview-alert-banner" class="preview-alert-banner" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OVERLAY MODAL: Editor de Notas del Catálogo -->
+    <div id="note-editor-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px; max-height: 400px;">
+            <div class="modal-header">
+                <h3 id="modal-title">Guardar Aviso</h3>
+                <button id="btn-modal-close" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body" style="flex-direction: column; gap: 12px;">
+                <div class="form-group">
+                    <label for="editor-note-title">Título identificador:</label>
+                    <input type="text" id="editor-note-title" placeholder="Ej: Anuncio Ofrendas">
+                </div>
+                <div class="form-group" style="flex-grow: 1;">
+                    <label for="editor-note-content">Contenido del aviso:</label>
+                    <textarea id="editor-note-content" placeholder="Escribe el texto de la nota rápida..." style="flex-grow: 1; resize: none;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-editor-cancel" class="btn danger">Cancelar</button>
+                <button id="btn-editor-save" class="btn primary">Guardar Nota</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -77,6 +77,7 @@ function setupIpcHandlers() {
     ipcMain.handle('db:delete-media', async (event, filePath) => {
         return dbManager.deleteMediaFile(filePath);
     });
+    
     // 6. Obtener las pantallas conectadas físicamente al sistema
     ipcMain.handle('screen:get-displays', async () => {
         const { screen } = require('electron');
@@ -90,9 +91,36 @@ function setupIpcHandlers() {
             };
         });
     });
+
     // 7. Obtener tipografías portátiles del sistema (.ttf/.otf)
     ipcMain.handle('screen:get-fonts', async () => {
         return dbManager.scanFontsFolder();
+    });
+
+    // 8. Manejadores para el catálogo de notas rápidas (notes.db)
+    ipcMain.handle('db:get-quick-notes', async () => {
+        return dbManager.getQuickNotes();
+    });
+
+    ipcMain.handle('db:save-quick-note', async (event, note) => {
+        return dbManager.saveQuickNote(note);
+    });
+
+    ipcMain.handle('db:delete-quick-note', async (event, id) => {
+        return dbManager.deleteQuickNote(id);
+    });
+
+    // 9. Manejadores para el catálogo de Notas de Sermón (notes.db)
+    ipcMain.handle('db:get-sermon-notes', async () => {
+        return dbManager.getSermonNotes();
+    });
+
+    ipcMain.handle('db:save-sermon-note', async (event, note) => {
+        return dbManager.saveSermonNote(note);
+    });
+
+    ipcMain.handle('db:delete-sermon-note', async (event, id) => {
+        return dbManager.deleteSermonNote(id);
     });
 }
 

@@ -36,5 +36,15 @@ contextBridge.exposeInMainWorld('api', {
     // Gestión de Pantallas y Proyección dinámicas (settings)
     getDisplays: () => ipcRenderer.invoke('screen:get-displays'),
     toggleProjection: (accion) => ipcRenderer.invoke('projection:toggle', accion),
-    getFonts: () => ipcRenderer.invoke('screen:get-fonts')
+    getFonts: () => ipcRenderer.invoke('screen:get-fonts'),
+
+    // Gestión de Notas Rápidas (notes.db)
+    getQuickNotes: () => ipcRenderer.invoke('db:get-quick-notes'),
+    saveQuickNote: (note) => ipcRenderer.invoke('db:save-quick-note', note),
+    deleteQuickNote: (id) => ipcRenderer.invoke('db:delete-quick-note', id),
+
+    // Gestión de Notas de Sermón (sermon_notes)
+    getSermonNotes: () => ipcRenderer.invoke('db:get-sermon-notes'),
+    saveSermonNote: (note) => ipcRenderer.invoke('db:save-sermon-note', note),
+    deleteSermonNote: (id) => ipcRenderer.invoke('db:delete-sermon-note', id) 
 });
