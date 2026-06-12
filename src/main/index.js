@@ -30,7 +30,6 @@ function createControlWindow() {
         controlWindow = null;
         if (projectionWindow) projectionWindow.close();
     });
-    controlWindow.webContents.openDevTools();
 }
 
 function createProjectionWindow() {

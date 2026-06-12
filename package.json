@@ -4,7 +4,8 @@
   "description": "Centro de control y proyección de Escrituras, letras de canciones y multimedia.",
   "main": "src/main/index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "electron-builder"
   },
   "keywords": [
     "electron",
@@ -17,12 +18,33 @@
   ],
   "author": "JosueGVM",
   "license": "MIT",
+  "dependencies": {
+    "@vscode/sqlite3": "^5.1.13-vscode",
+    "xml2js": "^0.6.2"
+  },
   "devDependencies": {
     "electron": "^30.0.0",
-    "electron-rebuild": "^3.2.9"
+    "electron-builder": "^24.13.3"
   },
-  "dependencies": {
-    "sqlite3": "^6.0.1",
-    "xml2js": "^0.6.2"
+  "build": {
+    "appId": "com.josuegvm.churchdisplay",
+    "productName": "Church Display",
+    "npmRebuild": "false",
+    "asarUnpack": [
+      "**/node_modules/@vscode/sqlite3/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "portable": {
+      "artifactName": "${productName}_Portable_${version}.${ext}"
+    },
+    "asar": true
   }
 }

@@ -1,41 +1,40 @@
-const { app } = require('electron'); // Importamos app para calcular la portabilidad
-const sqlite3 = require('sqlite3').verbose(); // Usamos la de Microsoft precompilada
+const { app } = require('electron'); 
+const sqlite3 = require('@vscode/sqlite3').verbose(); 
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
 
-// --- CÁLCULO DE PORTABILIDAD DINÁMICO ---
-// Si la aplicación está empaquetada (.isPackaged), la ruta será al lado del archivo .exe (USB)
-// Si está en desarrollo, se guardará en la carpeta raíz de tu código
-const DB_DIR = app.isPackaged 
-    ? path.join(path.dirname(app.getPath('exe')), 'database')
-    : path.join(__dirname, '../../database');
-
-const BIBLES_DB_PATH = path.join(DB_DIR, 'bibles.db');
-const SONGS_DB_PATH = path.join(DB_DIR, 'songs.db');
-const NOTES_DB_PATH = path.join(DB_DIR, 'notes.db');
-const SETTINGS_JSON_PATH = path.join(DB_DIR, 'settings.json');
-
-// Carpetas de Medios Portátiles
-const MEDIA_DIR = path.join(DB_DIR, 'media');
-const IMAGES_DIR = path.join(MEDIA_DIR, 'images');
-const VIDEOS_DIR = path.join(MEDIA_DIR, 'videos');
-const AUDIO_DIR = path.join(MEDIA_DIR, 'audio');
-
-// Carpeta de Fonts Portátiles
-const FONTS_DIR = path.join(DB_DIR, 'fonts');
-
-// Asegurar la existencia física de todas las carpetas portátiles
-[DB_DIR, MEDIA_DIR, IMAGES_DIR, VIDEOS_DIR, AUDIO_DIR, FONTS_DIR].forEach(dir => {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-});
+// Declaramos las rutas globales de forma limpia
+let DB_DIR, BIBLES_DB_PATH, SONGS_DB_PATH, SETTINGS_JSON_PATH;
+let IMAGES_DIR, VIDEOS_DIR, AUDIO_DIR, FONTS_DIR;
 
 let biblesDb = null;
 let songsDb = null;
+let notesDb = null;
 
 function initDatabases() {
+    // --- CÁLCULO DE PORTABILIDAD DINÁMICO SEGURO (Cuando app ya está lista) ---
+    DB_DIR = app.isPackaged 
+        ? path.join(process.env.PORTABLE_EXECUTABLE_DIR || path.dirname(app.getPath('exe')), 'database')
+        : path.join(__dirname, '../../database');
+
+    BIBLES_DB_PATH = path.join(DB_DIR, 'bibles.db');
+    SONGS_DB_PATH = path.join(DB_DIR, 'songs.db');
+    SETTINGS_JSON_PATH = path.join(DB_DIR, 'settings.json');
+
+    const MEDIA_DIR = path.join(DB_DIR, 'media');
+    IMAGES_DIR = path.join(MEDIA_DIR, 'images');
+    VIDEOS_DIR = path.join(MEDIA_DIR, 'videos');
+    AUDIO_DIR = path.join(MEDIA_DIR, 'audio');
+    FONTS_DIR = path.join(DB_DIR, 'fonts');
+
+    // Asegurar la existencia física de todas las carpetas portátiles
+    [DB_DIR, MEDIA_DIR, IMAGES_DIR, VIDEOS_DIR, AUDIO_DIR, FONTS_DIR].forEach(dir => {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+    });
+
     // 1. Conexión a la Base de Datos de Biblias
     biblesDb = new sqlite3.Database(BIBLES_DB_PATH, (err) => {
         if (err) {
@@ -70,35 +69,24 @@ function initDatabases() {
     });
 
     // 3. Conexión a la Base de Datos de Notas Rápidas
-    notesDb = new sqlite3.Database(NOTES_DB_PATH, (err) => {
+    notesDb = new sqlite3.Database(path.join(DB_DIR, 'notes.db'), (err) => {
         if (err) {
             console.error('Error al conectar con notes.db:', err.message);
         } else {
             console.log('Conectado a notes.db con éxito.');
-            // Crear tabla de notas rápidas si no existe
             notesDb.run(`CREATE TABLE IF NOT EXISTS quick_notes (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
                 content TEXT NOT NULL
             )`);
-            // Crear tabla de notas rápidas si no existe
-            notesDb.run(`CREATE TABLE IF NOT EXISTS quick_notes (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                content TEXT NOT NULL
-            )`);
-
-            // --- AGREGAR CREACIÓN DE TABLA DE NOTAS DE SERMÓN ---
             notesDb.run(`CREATE TABLE IF NOT EXISTS sermon_notes (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
                 content TEXT NOT NULL,
                 author TEXT,
-                category TEXT
+                category TEXT,
+                created_at TEXT
             )`);
-            notesDb.run(`ALTER TABLE sermon_notes ADD COLUMN created_at TEXT`, (err) => {
-                // Es seguro ignorar el error si la columna ya existe de fábrica
-            });
         }
     });
 }
