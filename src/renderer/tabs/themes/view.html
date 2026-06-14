@@ -26,143 +26,191 @@
         </div>
     </div>
 
-    <!-- COLUMNA 2: Editor Avanzado (Agrupado en Acordeones Colapsables) -->
+    <!-- COLUMNA 2: Editor Avanzado -->
     <div class="themes-column editor-column">
         <div class="column-header-title">
             <h3 id="editor-header-title">Editar Tema</h3>
         </div>
         
-        <div class="column-scroll-container editor-form" id="theme-editor-form" style="padding: 5px; gap: 8px;">
-            
-            <!-- ACORDEÓN 1: GENERAL E INICIO -->
+        <div class="column-scroll-container editor-form" id="theme-editor-form">
+
+            <!-- ACORDEÓN 1: GENERAL -->
             <details class="settings-group" open>
-                <summary>🏷️ General e Inicio</summary>
+                <summary>🏷️ General</summary>
                 <div class="group-content">
                     <div class="form-group">
-                        <label for="theme-name">Nombre del Tema:</label>
+                        <label for="theme-name">Nombre del Tema</label>
                         <input type="text" id="theme-name" placeholder="Ej: Adoración Azul">
                     </div>
                 </div>
             </details>
 
-            <!-- ACORDEÓN 2: FUENTE Y EFECTOS -->
+            <!-- ACORDEÓN 2: FUENTE -->
             <details class="settings-group" open>
-                <summary>🔤 Fuente y Efectos</summary>
+                <summary>🔤 Fuente</summary>
                 <div class="group-content">
                     <div class="form-group">
-                        <label for="theme-font-select">Tipografía (Letra):</label>
+                        <label for="theme-font-select">Tipografía</label>
                         <select id="theme-font-select"></select>
                     </div>
 
                     <div class="form-group">
                         <div class="label-row">
-                            <label for="theme-size-slider">Tamaño de letra (Proyector):</label>
-                            <span id="theme-size-val">5 vh</span>
+                            <label for="theme-size-slider">Tamaño</label>
+                            <span id="theme-size-val" class="val-badge">5 vh</span>
                         </div>
-                        <!-- Rango máximo aumentado a 25 para proyectores grandes -->
                         <input type="range" id="theme-size-slider" min="3" max="25" step="0.5" value="5">
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <div class="label-row">
-                                <label for="theme-line-height">Interlineado:</label>
-                                <span id="theme-line-height-val">1.4</span>
+                                <label for="theme-line-height">Interlineado</label>
+                                <span id="theme-line-height-val" class="val-badge">1.4</span>
                             </div>
                             <input type="range" id="theme-line-height" min="1.0" max="2.0" step="0.1" value="1.4">
                         </div>
                         <div class="form-group">
                             <div class="label-row">
-                                <label for="theme-letter-spacing">Espaciado:</label>
-                                <span id="theme-letter-spacing-val">0 px</span>
+                                <label for="theme-letter-spacing">Espaciado</label>
+                                <span id="theme-letter-spacing-val" class="val-badge">0 px</span>
                             </div>
                             <input type="range" id="theme-letter-spacing" min="-2" max="10" step="1" value="0">
                         </div>
                     </div>
 
-                    <div class="form-row checkbox-row">
-                        <div class="form-checkbox-group">
-                            <input type="checkbox" id="theme-check-bold">
-                            <label for="theme-check-bold"><b>B</b></label>
-                        </div>
-                        <div class="form-checkbox-group">
-                            <input type="checkbox" id="theme-check-italic">
-                            <label for="theme-check-italic"><i>I</i></label>
-                        </div>
-                        <div class="form-checkbox-group">
-                            <input type="checkbox" id="theme-check-uppercase">
-                            <label for="theme-check-uppercase">Mayús</label>
-                        </div>
+                    <!-- Toggle buttons: Negrita / Cursiva / Mayúsculas -->
+                    <div class="toggle-btn-row">
+                        <button class="toggle-btn" id="theme-check-bold" data-active="false"><b>B</b></button>
+                        <button class="toggle-btn" id="theme-check-italic" data-active="false"><i>I</i></button>
+                        <button class="toggle-btn" id="theme-check-uppercase" data-active="false">AA</button>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="theme-color">Color Texto:</label>
+                            <label>Color texto</label>
                             <input type="color" id="theme-color" value="#ffffff">
-                        </div>
-                        <div class="form-group">
-                            <label for="theme-shadow-color">Color Sombra:</label>
-                            <input type="color" id="theme-shadow-color" value="#000000">
                         </div>
                     </div>
                 </div>
             </details>
 
-            <!-- ACORDEÓN 3: CONTORNO DE LETRA -->
+            <!-- ACORDEÓN 3: SOMBRA Y GLOW -->
+            <details class="settings-group">
+                <summary>✨ Sombra y Glow</summary>
+                <div class="group-content">
+
+                    <!-- Sombra -->
+                    <div class="section-label">Sombra</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Color sombra</label>
+                            <input type="color" id="theme-shadow-color" value="#000000">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label>Opacidad</label>
+                                <span id="theme-shadow-opacity-val" class="val-badge">80%</span>
+                            </div>
+                            <input type="range" id="theme-shadow-opacity" min="0" max="1" step="0.05" value="0.8">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label>Difuminado</label>
+                            <span id="theme-shadow-blur-val" class="val-badge">8 px</span>
+                        </div>
+                        <input type="range" id="theme-shadow-blur" min="0" max="30" step="1" value="8">
+                    </div>
+
+                    <!-- Glow -->
+                    <div class="section-divider"></div>
+                    <div class="section-label">Resplandor (Glow)</div>
+                    <button class="feature-toggle-btn" id="btn-toggle-glow" data-active="false">
+                        <span class="toggle-indicator"></span> Activar Glow
+                    </button>
+                    <div id="glow-controls" class="hidden">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Color glow</label>
+                                <input type="color" id="theme-glow-color" value="#ffffff">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-row">
+                                    <label>Intensidad</label>
+                                    <span id="theme-glow-blur-val" class="val-badge">10 px</span>
+                                </div>
+                                <input type="range" id="theme-glow-blur" min="2" max="40" step="1" value="10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <!-- ACORDEÓN 4: CONTORNO -->
             <details class="settings-group">
                 <summary>🎨 Contorno de Letras</summary>
                 <div class="group-content">
-                    <div class="form-checkbox-group">
-                        <input type="checkbox" id="theme-check-stroke">
-                        <label for="theme-check-stroke">Activar contorno de letras</label>
-                    </div>
-                    <div class="form-row stroke-controls hidden" id="stroke-controls-row">
-                        <div class="form-group">
-                            <label for="theme-stroke-color">Color contorno:</label>
-                            <input type="color" id="theme-stroke-color" value="#000000">
-                        </div>
-                        <div class="form-group">
-                            <div class="label-row">
-                                <label for="theme-stroke-width">Grosor:</label>
-                                <span id="theme-stroke-width-val">1 px</span>
+                    <button class="feature-toggle-btn" id="btn-toggle-stroke" data-active="false">
+                        <span class="toggle-indicator"></span> Activar contorno
+                    </button>
+                    <div id="stroke-controls" class="hidden">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Color contorno</label>
+                                <input type="color" id="theme-stroke-color" value="#000000">
                             </div>
-                            <input type="range" id="theme-stroke-width" min="1" max="5" step="0.5" value="1">
+                            <div class="form-group">
+                                <div class="label-row">
+                                    <label>Grosor</label>
+                                    <span id="theme-stroke-width-val" class="val-badge">1 px</span>
+                                </div>
+                                <input type="range" id="theme-stroke-width" min="1" max="5" step="0.5" value="1">
+                            </div>
                         </div>
                     </div>
                 </div>
             </details>
 
-            <!-- ACORDEÓN 4: CAJA DE RELLENO -->
+            <!-- ACORDEÓN 5: CAJA DE RELLENO -->
             <details class="settings-group">
-                <summary>⏹️ Caja de Relleno (Fondo Texto)</summary>
+                <summary>⏹️ Caja de Relleno</summary>
                 <div class="group-content">
-                    <div class="form-checkbox-group">
-                        <input type="checkbox" id="theme-check-fillbox">
-                        <label for="theme-check-fillbox">Activar caja de relleno única</label>
-                    </div>
-                    <div class="form-row fillbox-controls hidden" id="fillbox-controls-row">
-                        <div class="form-group">
-                            <label for="theme-fillbox-color">Color relleno:</label>
-                            <input type="color" id="theme-fillbox-color" value="#000000">
+                    <button class="feature-toggle-btn" id="btn-toggle-fillbox" data-active="false">
+                        <span class="toggle-indicator"></span> Activar caja de relleno
+                    </button>
+                    <div id="fillbox-controls" class="hidden">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Color relleno</label>
+                                <input type="color" id="theme-fillbox-color" value="#000000">
+                            </div>
+                            <div class="form-group">
+                                <div class="label-row">
+                                    <label>Opacidad</label>
+                                    <span id="theme-fillbox-opacity-val" class="val-badge">50%</span>
+                                </div>
+                                <input type="range" id="theme-fillbox-opacity" min="0" max="1" step="0.05" value="0.5">
+                            </div>
                         </div>
                         <div class="form-group">
                             <div class="label-row">
-                                <label for="theme-fillbox-opacity">Opacidad:</label>
-                                <span id="theme-fillbox-opacity-val">50 %</span>
+                                <label>Padding interno</label>
+                                <span id="theme-fillbox-padding-val" class="val-badge">15 px</span>
                             </div>
-                            <input type="range" id="theme-fillbox-opacity" min="0" max="1" step="0.1" value="0.5">
+                            <input type="range" id="theme-fillbox-padding" min="0" max="60" step="5" value="15">
                         </div>
                     </div>
                 </div>
             </details>
 
-            <!-- ACORDEÓN 5: ALINEACIÓN -->
+            <!-- ACORDEÓN 6: ALINEACIÓN Y MÁRGENES -->
             <details class="settings-group">
-                <summary>⏺️ Alineación del Texto</summary>
+                <summary>⏺️ Alineación y Márgenes</summary>
                 <div class="group-content">
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Horizontal:</label>
+                            <label>Horizontal</label>
                             <div class="align-grid" id="align-h-grid">
                                 <button class="btn-align" data-align="left" title="Izquierda">⬅</button>
                                 <button class="btn-align" data-align="center" title="Centro">⏺</button>
@@ -170,7 +218,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Vertical:</label>
+                            <label>Vertical</label>
                             <div class="align-grid" id="align-v-grid">
                                 <button class="btn-align" data-align="top" title="Arriba">▲</button>
                                 <button class="btn-align" data-align="center" title="Centro">⏺</button>
@@ -178,48 +226,56 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label>Margen de pantalla</label>
+                            <span id="theme-padding-val" class="val-badge">40 px</span>
+                        </div>
+                        <input type="range" id="theme-padding" min="0" max="120" step="10" value="40">
+                    </div>
                 </div>
             </details>
 
-            <!-- ACORDEÓN 6: TÍTULOS Y COMENTARIOS -->
+            <!-- ACORDEÓN 7: TÍTULOS DE BIBLIA -->
             <details class="settings-group">
-                <summary>📖 Títulos de Biblia y Notas</summary>
+                <summary>📖 Títulos de Biblia</summary>
                 <div class="group-content">
                     <div class="form-group">
-                        <label for="theme-title-pos">Ubicación de la cita bíblica:</label>
+                        <label for="theme-title-pos">Posición de la cita</label>
                         <select id="theme-title-pos">
                             <option value="top">Arriba del texto (Flotante)</option>
                             <option value="bottom">Abajo del texto (Flotante)</option>
-                            <option value="bar-top">Fila de ancho completo (Arriba)</option>
-                            <option value="bar-bottom">Fila de ancho completo (Abajo)</option>
+                            <option value="bar-top">Faja ancho completo (Arriba)</option>
+                            <option value="bar-bottom">Faja ancho completo (Abajo)</option>
                         </select>
                     </div>
-                    <div class="form-row stroke-controls hidden" id="title-bar-controls-row">
-                        <div class="form-group">
-                            <label for="theme-title-bar-color">Color de faja:</label>
-                            <input type="color" id="theme-title-bar-color" value="#000000">
-                        </div>
-                        <div class="form-group">
-                            <div class="label-row">
-                                <label for="theme-title-bar-opacity">Opacidad faja:</label>
-                                <span id="theme-title-bar-opacity-val">60 %</span>
+                    <div id="title-bar-controls" class="hidden">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Color de faja</label>
+                                <input type="color" id="theme-title-bar-color" value="#000000">
                             </div>
-                            <input type="range" id="theme-title-bar-opacity" min="0" max="1" step="0.1" value="0.6">
+                            <div class="form-group">
+                                <div class="label-row">
+                                    <label>Opacidad faja</label>
+                                    <span id="theme-title-bar-opacity-val" class="val-badge">60%</span>
+                                </div>
+                                <input type="range" id="theme-title-bar-opacity" min="0" max="1" step="0.05" value="0.6">
+                            </div>
                         </div>
                     </div>
-                    <div class="form-checkbox-group" style="margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
-                        <input type="checkbox" id="theme-check-comments" checked>
-                        <label for="theme-check-comments" style="font-size: 11px;">Ocultar comentarios (//) en proyección</label>
-                    </div>
+                    <button class="feature-toggle-btn" id="btn-toggle-comments" data-active="true">
+                        <span class="toggle-indicator"></span> Ocultar comentarios (//) en proyección
+                    </button>
                 </div>
             </details>
 
-            <!-- ACORDEÓN 7: FONDO GENERAL DEL TEMA -->
+            <!-- ACORDEÓN 8: FONDO -->
             <details class="settings-group">
                 <summary>🖼️ Fondo de Pantalla</summary>
                 <div class="group-content">
                     <div class="form-group">
-                        <label for="theme-bg-type">Tipo de Fondo:</label>
+                        <label for="theme-bg-type">Tipo de fondo</label>
                         <select id="theme-bg-type">
                             <option value="color">Color Sólido</option>
                             <option value="image">Imagen de la USB</option>
@@ -227,48 +283,71 @@
                         </select>
                     </div>
                     <div class="form-group" id="group-bg-media" style="display: none;">
-                        <label for="theme-bg-media">Archivo de fondo:</label>
+                        <label>Archivo de fondo</label>
                         <select id="theme-bg-media"></select>
                     </div>
                     <div class="form-group" id="group-bg-color">
-                        <label for="theme-bg-color">Color de fondo:</label>
+                        <label>Color de fondo</label>
                         <input type="color" id="theme-bg-color" value="#131316">
+                    </div>
+
+                    <!-- Efectos de video -->
+                    <div id="group-bg-video-fx" style="display: none;">
+                        <div class="section-divider"></div>
+                        <div class="section-label">Efectos de Video</div>
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label>Brillo</label>
+                                <span id="theme-video-brightness-val" class="val-badge">100%</span>
+                            </div>
+                            <input type="range" id="theme-video-brightness" min="10" max="150" step="5" value="100">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label>Opacidad</label>
+                                <span id="theme-video-opacity-val" class="val-badge">100%</span>
+                            </div>
+                            <input type="range" id="theme-video-opacity" min="10" max="100" step="5" value="100">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label>Velocidad</label>
+                                <span id="theme-video-speed-val" class="val-badge">1×</span>
+                            </div>
+                            <input type="range" id="theme-video-speed" min="0.25" max="2" step="0.25" value="1">
+                        </div>
                     </div>
                 </div>
             </details>
 
             <!-- Acciones -->
-            <div class="form-actions" style="margin-top: 10px; padding: 10px 0;">
-                <button id="btn-delete-theme" class="btn danger" style="flex: 0.8;" disabled>Eliminar</button>
-                <button id="btn-save-theme" class="btn primary" style="flex: 1.2;">Guardar Tema</button>
+            <div class="form-actions">
+                <button id="btn-delete-theme" class="btn danger" disabled>Eliminar</button>
+                <button id="btn-save-theme" class="btn primary">Guardar Tema</button>
             </div>
+
+            <div id="settings-save-status" class="theme-status-msg"></div>
         </div>
     </div>
 
-    <!-- COLUMNA 3: Previsualizador del Tema en Vivo -->
+    <!-- COLUMNA 3: Previsualizador -->
     <div class="themes-preview-column">
         <div class="preview-header">
-            <h2>Vista Previa del Tema</h2>
-            <p>Se adapta automáticamente al ancho de la columna manteniendo la relación de aspecto 16:9.</p>
+            <h2>Vista Previa</h2>
+            <p>Relación de aspecto 16:9</p>
         </div>
         
         <div class="preview-display-container">
-            <!-- Caja de Proyección en Miniatura 16:9 con Container Queries -->
             <div id="theme-preview-box" class="theme-preview-box">
                 <video id="preview-bg-video" class="preview-bg" loop muted style="display: none;"></video>
                 <img id="preview-bg-image" class="preview-bg" style="display: none;">
                 
-                <!-- Posiciones de Título Fijas de Ancho Completo -->
                 <div id="preview-title-bar-top" class="preview-title-bar-full" style="display: none;">Génesis 1:1</div>
 
                 <div id="preview-text-overlay" class="preview-text-overlay">
-                    <!-- Caja de relleno de texto única (Bounding Box) -->
                     <div id="preview-text-box" class="preview-text-box">
-                        <!-- Posiciones de Título Fijas Internas (Flotantes) -->
                         <div id="preview-title-inline-top" class="preview-title-inline" style="display: none;">Génesis 1:1</div>
-                        
                         <div id="preview-text-content">Sublime gracia del Señor<br>Que a un pecador salvó.</div>
-                        
                         <div id="preview-title-inline-bottom" class="preview-title-inline" style="display: none;">Génesis 1:1</div>
                     </div>
                 </div>

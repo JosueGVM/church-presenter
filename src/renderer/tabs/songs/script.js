@@ -1,4 +1,5 @@
 import { getLabelColor } from '../../../constants/songs.js';
+import { splitTextByWords } from '../../common/textUtils.js';
 
 // --- ESTADOS INTERNOS DEL MÓDULO ---
 let catalogSongs = [];    // Almacena canciones devueltas por el buscador
@@ -8,6 +9,10 @@ let selectedSong = null;  // Canción cargada actualmente
 let parsedSlides = [];    // Diapositivas procesadas de la canción activa
 let selectedSlideIndex = null;
 let activeLiveSlideIndex = null; // Índice de la diapositiva en pantalla externa
+
+// Sub-slides de estrofa larga (división por palabras)
+let _pendingChunks = [];
+let _currentChunkIndex = 0;
 
 // Estado del Editor de Canciones
 let editingSongId = null; 
@@ -384,19 +389,26 @@ async function projectSlide(index) {
 
         const activeTheme = settings.themes.find(t => t.id === themeId) || settings.themes[0];
 
-        // 3. Empaquetar Texto + Estilo + Fondo
-        const payload = {
-            texto: slide.text,
+        // 3. Dividir por palabras si está configurado
+        const wordLimit = settings.wordSplitLimit ?? 20;
+        const chunks = splitTextByWords(slide.text, wordLimit);
+
+        // 4. Empaquetar Texto + Estilo + Fondo y proyectar el primer chunk
+        const buildPayload = (texto) => ({
+            texto,
             estilo: activeTheme,
             background: activeTheme.bgType !== 'color' ? {
                 path: activeTheme.bgPath,
                 type: activeTheme.bgType
             } : null,
             clearBg: activeTheme.bgType === 'color'
-        };
+        });
 
-        // 4. Proyectar
-        window.api.proyectarTexto(payload);
+        window.api.proyectarTexto(buildPayload(chunks[0]));
+
+        // Registrar chunks restantes para navegación con flechas
+        _pendingChunks = chunks;
+        _currentChunkIndex = 0;
 
     } catch (err) {
         console.error("[Songs] Error al proyectar slide con tema:", err);
@@ -498,11 +510,23 @@ function handleSongKeydown(e) {
 }
 
 function navigateLiveSong(direction) {
+    // Si hay chunks pendientes del slide actual, navegar entre ellos primero
+    if (_pendingChunks.length > 1) {
+        const nextChunk = _currentChunkIndex + direction;
+        if (nextChunk >= 0 && nextChunk < _pendingChunks.length) {
+            _currentChunkIndex = nextChunk;
+            window.api.proyectarTexto({ texto: _pendingChunks[_currentChunkIndex] });
+            return;
+        }
+        // Si llegamos al límite de chunks, continuamos al siguiente slide
+    }
+
     const nextIdx = activeLiveSlideIndex + direction;
     if (nextIdx >= 0 && nextIdx < parsedSlides.length) {
+        _pendingChunks = [];
+        _currentChunkIndex = 0;
         selectSlide(nextIdx);
         projectSlide(nextIdx);
-        // Scroll automático suave al visor de la tarjeta proyectada
         const targetCard = slidesGrid.querySelector(`.slide-card[data-index="${nextIdx}"]`);
         if (targetCard) targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }

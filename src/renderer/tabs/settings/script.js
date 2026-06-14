@@ -1,5 +1,6 @@
 let screenList, btnRedetectScreens, btnToggleProjection;
 let selectStartTab, selectUiTheme, checkHideWelcome, btnViewWelcome;
+let selectWordSplit;
 let settingsSaveStatus;
 
 let isProjectionOpen = false; // Bandera de estado del proyector
@@ -14,6 +15,7 @@ export async function init() {
     selectUiTheme = document.getElementById('select-ui-theme');
     checkHideWelcome = document.getElementById('check-hide-welcome');
     btnViewWelcome = document.getElementById('btn-view-welcome');
+    selectWordSplit = document.getElementById('select-word-split');
 
     settingsSaveStatus = document.getElementById('settings-save-status');
 
@@ -32,6 +34,7 @@ export async function init() {
     selectStartTab.addEventListener('change', saveSettings);
     selectUiTheme.addEventListener('change', saveSettings);
     checkHideWelcome.addEventListener('change', saveSettings);
+    selectWordSplit.addEventListener('change', saveSettings);
 
     // 3. Inicializaciones iniciales
     await detectDisplays();
@@ -103,6 +106,7 @@ async function loadSettings() {
             selectStartTab.value = settings.startTab || 'welcome';
             selectUiTheme.value = settings.uiTheme || 'dark';
             checkHideWelcome.checked = !!settings.hideWelcomeIcon;
+            selectWordSplit.value = String(settings.wordSplitLimit ?? 150);
         }
     } catch (err) {
         console.error("[Settings] Error al cargar configuraciones:", err);
@@ -119,6 +123,7 @@ async function saveSettings() {
         settings.startTab = selectStartTab.value;
         settings.uiTheme = selectUiTheme.value;
         settings.hideWelcomeIcon = checkHideWelcome.checked;
+        settings.wordSplitLimit = parseInt(selectWordSplit.value);
 
         // 3. Guardamos el objeto completo y combinado de vuelta en la USB
         const result = await window.api.saveSettings(settings);

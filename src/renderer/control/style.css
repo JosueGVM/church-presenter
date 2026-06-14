@@ -101,3 +101,88 @@ body, html {
     position: relative;
     background-color: var(--bg-main);
 }
+
+/* ================= BARRA DE TÍTULO PERSONALIZADA ================= */
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.titlebar {
+    height: 36px;
+    min-height: 36px;
+    background-color: #0d0d10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0 0 12px;
+    -webkit-app-region: drag; /* Toda la barra es arrastrable */
+    user-select: none;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.titlebar-drag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.titlebar-icon {
+    width: 16px;
+    height: 16px;
+    color: #007acc;
+    display: flex;
+    align-items: center;
+}
+.titlebar-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.titlebar-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #52525b;
+    letter-spacing: 0.3px;
+}
+
+/* Botones de control de ventana */
+.titlebar-controls {
+    display: flex;
+    align-items: stretch;
+    height: 36px;
+    -webkit-app-region: no-drag; /* Los botones NO son arrastrables */
+}
+
+.titlebar-btn {
+    width: 46px;
+    height: 36px;
+    background: none;
+    border: none;
+    color: #52525b;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.1s ease, color 0.1s ease;
+}
+.titlebar-btn:hover {
+    background-color: rgba(255,255,255,0.06);
+    color: #e2e2e7;
+}
+.titlebar-btn.close:hover {
+    background-color: #c0392b;
+    color: #fff;
+}
+
+/* El app-container ya no ocupa 100vh — ocupa el resto bajo la titlebar */
+.app-container {
+    flex: 1;
+    overflow: hidden;
+}

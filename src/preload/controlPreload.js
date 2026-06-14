@@ -46,5 +46,10 @@ contextBridge.exposeInMainWorld('api', {
     // Gestión de Notas de Sermón (sermon_notes)
     getSermonNotes: () => ipcRenderer.invoke('db:get-sermon-notes'),
     saveSermonNote: (note) => ipcRenderer.invoke('db:save-sermon-note', note),
-    deleteSermonNote: (id) => ipcRenderer.invoke('db:delete-sermon-note', id) 
+    deleteSermonNote: (id) => ipcRenderer.invoke('db:delete-sermon-note', id),
+
+    // Control de ventana personalizada
+    minimizeWindow: () => ipcRenderer.send('window:minimize'),
+    maximizeWindow: () => ipcRenderer.send('window:maximize'),
+    closeWindow:    () => ipcRenderer.send('window:close')
 });

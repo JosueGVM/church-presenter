@@ -4,6 +4,11 @@ const tabStylesheet = document.getElementById('tab-stylesheet');
 
 const TABS_PATH = '../tabs';
 
+// Botones de la titlebar personalizada
+document.getElementById('tb-minimize')?.addEventListener('click', () => window.api.minimizeWindow());
+document.getElementById('tb-maximize')?.addEventListener('click', () => window.api.maximizeWindow());
+document.getElementById('tb-close')?.addEventListener('click', () => window.api.closeWindow());
+
 // Función para ocultar o mostrar el icono de Tutorial según la configuración
 function applySidebarSettings(settings) {
     const welcomeBtn = document.querySelector('.nav-btn[data-tab="welcome"]');

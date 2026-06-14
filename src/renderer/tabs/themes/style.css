@@ -8,7 +8,7 @@
     position: relative;
 }
 
-/* ================= COMPARTIDO POR COLUMNAS 1 Y 2 ================= */
+/* ================= COLUMNAS ================= */
 .themes-column {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -18,21 +18,18 @@
     overflow: hidden;
 }
 
-/* Columna 1 (Catálogo y Selectores Globales) */
 .catalog-column {
-    width: 260px;
-    min-width: 260px;
-    max-width: 260px;
-    justify-content: space-between; /* Deja espacio para los temas globales abajo */
+    width: 220px;
+    min-width: 220px;
+    max-width: 220px;
+    justify-content: space-between;
 }
 
-/* Columna 2 (Editor) */
 .editor-column {
-    width: 280px;
-    min-width: 280px;
-    max-width: 280px;
+    width: 290px;
+    min-width: 290px;
+    max-width: 290px;
 }
-
 
 .column-scroll-container {
     flex-grow: 1;
@@ -40,25 +37,15 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
-/* Scrollbars minimalistas */
-.column-scroll-container::-webkit-scrollbar, .preview-display-container::-webkit-scrollbar {
-    width: 6px;
-}
-.column-scroll-container::-webkit-scrollbar-track, .preview-display-container::-webkit-scrollbar-track {
-    background: transparent;
-}
-.column-scroll-container::-webkit-scrollbar-thumb, .preview-display-container::-webkit-scrollbar-thumb {
-    background-color: var(--border-color);
-    border-radius: 10px;
-}
-.column-scroll-container::-webkit-scrollbar-thumb:hover, .preview-display-container::-webkit-scrollbar-thumb:hover {
-    background-color: var(--accent);
-}
+.column-scroll-container::-webkit-scrollbar { width: 4px; }
+.column-scroll-container::-webkit-scrollbar-track { background: transparent; }
+.column-scroll-container::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 10px; }
+.column-scroll-container::-webkit-scrollbar-thumb:hover { background-color: var(--accent); }
 
-/* --- Lista de Catálogo de Temas (Columna 1) --- */
+/* ================= LISTA DE TEMAS ================= */
 #themes-list {
     list-style: none;
     padding: 0;
@@ -69,66 +56,154 @@
 }
 
 #themes-list li {
-    padding: 12px;
-    background-color: var(--bg-item) !important;
-    border: 1px solid var(--border-color) !important;
+    padding: 10px 12px;
+    background-color: var(--bg-item);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
-    font-weight: bold;
-    color: var(--text-secondary) !important; /* Texto adaptable */
+    font-weight: 500;
+    color: var(--text-secondary);
     transition: all 0.15s ease;
 }
+#themes-list li:hover { border-color: var(--accent); color: var(--text-primary); }
+#themes-list li.active { background-color: rgba(0,122,204,0.12); border-color: var(--accent); color: var(--text-primary); }
 
-#themes-list li:hover {
-    border-color: var(--accent);
-    background-color: rgba(255, 255, 255, 0.02);
-}
-#themes-list li.active {
-    background-color: rgba(0, 122, 204, 0.15);
-    border-color: var(--accent);
-}
-
-/* Panel de Temas Globales (Fondo de Columna 1) */
+/* ================= SECCIÓN GLOBALES ================= */
 .globals-section {
-    background-color: rgba(0, 0, 0, 0.08) !important;
+    background-color: rgba(0,0,0,0.08);
     border-top: 1px solid var(--border-color);
-    padding: 14px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     box-sizing: border-box;
 }
 .globals-section h3 {
-    margin: 0 0 4px 0;
-    font-size: 12px;
+    margin: 0 0 2px 0;
+    font-size: 11px;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
 }
 
-/* --- Formulario de Atributos (Columna 2) --- */
-.editor-form {
-    gap: 14px;
+/* ================= EDITOR FORM ================= */
+.editor-form { gap: 6px; }
+
+/* Acordeones */
+details.settings-group {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
 }
 
-/* .form-group, .form-row → global.css */
-
-.label-row {
+details.settings-group summary {
+    padding: 9px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.06);
+    user-select: none;
+    outline: none;
+    list-style: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    letter-spacing: 0.3px;
 }
-#theme-size-val {
-    font-size: 11px;
-    font-weight: bold;
-    color: var(--accent);
+details.settings-group summary::after {
+    content: "▼";
+    font-size: 8px;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease;
+}
+details.settings-group[open] summary::after { transform: rotate(180deg); }
+details.settings-group summary:hover { background-color: rgba(0,0,0,0.1); color: var(--text-primary); }
+
+details.settings-group .group-content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid var(--border-color);
 }
 
-/* Selectores de color nativos discretos */
+/* ================= TOGGLE BUTTONS (reemplazo de checkboxes) ================= */
+
+/* Fila de toggles de tipografía (B / I / AA) */
+.toggle-btn-row {
+    display: flex;
+    gap: 6px;
+}
+
+.toggle-btn {
+    flex: 1;
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 7px 0;
+    font-size: 13px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+}
+.toggle-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+.toggle-btn.active {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+/* Toggle de feature completa (Activar glow / contorno / etc) */
+.feature-toggle-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 8px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+    font-family: inherit;
+}
+.feature-toggle-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+.feature-toggle-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background-color: rgba(0,122,204,0.08);
+}
+
+/* Indicador circular de estado */
+.toggle-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--border-color);
+    flex-shrink: 0;
+    transition: background-color 0.15s ease;
+}
+.feature-toggle-btn.active .toggle-indicator { background-color: var(--accent); }
+
+/* ================= SLIDERS ================= */
+input[type="range"] {
+    width: 100%;
+    height: 4px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+/* ================= SELECTORES DE COLOR ================= */
 input[type="color"] {
     width: 100%;
-    height: 38px;
+    height: 34px;
     background: none;
     border: 1px solid var(--border-color);
     border-radius: 6px;
@@ -137,89 +212,63 @@ input[type="color"] {
     padding: 2px;
 }
 
-/* Rejilla de Botones de Alineación (Holyrics Style) */
+/* ================= BADGE DE VALOR ================= */
+.val-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background-color: rgba(0,122,204,0.1);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+/* ================= SEPARADORES Y ETIQUETAS DE SECCIÓN ================= */
+.section-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 2px 0;
+}
+.section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+/* ================= ALINEACIÓN ================= */
 .align-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 4px;
 }
-
 .btn-align {
     background-color: var(--bg-main);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
-    padding: 8px 0;
-    font-size: 14px;
+    padding: 7px 0;
+    font-size: 13px;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.15s ease;
 }
-.btn-align:hover {
-    background-color: var(--border-color);
-    color: var(--text-primary);
-}
-.btn-align.active {
-    background-color: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-}
+.btn-align:hover { background-color: var(--border-color); color: var(--text-primary); }
+.btn-align.active { background-color: var(--accent); border-color: var(--accent); color: #fff; }
 
+/* ================= ACCIONES ================= */
 .form-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    padding-top: 4px;
+}
+.theme-status-msg {
+    font-size: 12px;
+    color: var(--accent);
+    text-align: center;
+    min-height: 18px;
 }
 
-/* ESTILOS DE ACORDEONES COLAPSABLES (details / summary) */
-details.settings-group {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    margin-bottom: 5px;
-    overflow: hidden;
-    transition: all 0.2s ease;
-}
-
-details.settings-group summary {
-    padding: 10px 12px;
-    font-size: 13px;
-    font-weight: bold;
-    color: var(--text-secondary) !important; /* Texto adaptable */
-    cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.06) !important; /* Fondo suave adaptable */
-    user-select: none;
-    outline: none;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-} 
-
-/* Indicador de flecha personalizado para el acordeón */
-details.settings-group summary::after {
-    content: "▼";
-    font-size: 9px;
-    color: var(--text-secondary);
-    transition: transform 0.2s ease;
-}
-
-details.settings-group[open] summary::after {
-    transform: rotate(180deg); /* Rota la flecha al estar abierto */
-}
-
-details.settings-group summary:hover {
-    background-color: var(--border-color);
-}
-
-details.settings-group .group-content {
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    border-top: 1px solid var(--border-color);
-    background-color: var(--bg-item);
-}
-
-/* ================= COLUMNA 3 (VISOR PREVISUALIZADOR) ================= */
+/* ================= COLUMNA 3: PREVISUALIZADOR ================= */
 .themes-preview-column {
     flex: 1;
     background-color: var(--bg-card);
@@ -238,80 +287,54 @@ details.settings-group .group-content {
     justify-content: center;
     background-color: var(--bg-item);
     box-sizing: border-box;
-    width: 100%;
 }
 
-/* Caja de Proyección en Miniatura 16:9 */
 .theme-preview-box {
     width: 100%;
     aspect-ratio: 16 / 9;
-    background-color: var(--bg-card);
+    background-color: #131316;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     overflow: hidden;
     position: relative;
     box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    box-sizing: border-box;
     container-type: size;
 }
 
 .preview-bg {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     object-fit: cover;
     z-index: 1;
 }
 
-/* Capa de Texto Dinámica con Flexbox para centrado absoluto */
 .preview-text-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     z-index: 2;
     display: flex;
     box-sizing: border-box;
-    padding: 20px;
+    padding: calc(var(--theme-padding, 40) * 0.05cqh);
 }
 
 #preview-text-content {
     width: 100%;
     text-align: center;
     font-family: 'Segoe UI', sans-serif;
-    color: var(--text-secondary);
-    font-size: calc(var(--theme-font-size, 5)* 1cqh);
-    font-weight: normal;
+    color: #fff;
+    font-size: calc(var(--theme-font-size, 5) * 1cqh);
     line-height: var(--theme-line-height, 1.4);
-    letter-spacing: var(--theme-letter-spacing), 0px;
+    letter-spacing: var(--theme-letter-spacing, 0px);
     white-space: pre-line;
     box-sizing: border-box;
     word-wrap: break-word;
 }
 
-/* Estilos de separadores lógicos en el formulario */
-.border-section {
-    border-top: 1px solid var(--border-color);
-    padding-top: 12px;
-}
-
-.checkbox-row {
-    flex-wrap: wrap;
-    gap: 12px 15px;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Caja de Relleno Única */
 .preview-text-box {
     background-color: transparent;
     border-radius: 6px;
-    padding: 0;
     transition: all 0.2s ease;
     max-width: 90%;
     display: flex;
@@ -319,26 +342,11 @@ details.settings-group .group-content {
     box-sizing: border-box;
 }
 
-/* Barra del Título del Versículo (Simulación) */
-.preview-title-bar {
-    width: 100%;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 6px 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-sizing: border-box;
-    text-align: center;
-    border-radius: 4px;
-    margin-bottom: 8px;
-}
-
-/* Faja de Título de Ancho Completo (Fija Arriba o Abajo) */
 .preview-title-bar-full {
     position: absolute;
     left: 0;
     width: 100%;
-    font-size: calc(2.5 * 1cqh); /* Escala dinámicamente */
+    font-size: calc(2.5 * 1cqh);
     font-weight: bold;
     padding: calc(1.5 * 1cqh) 0;
     text-transform: uppercase;
@@ -346,27 +354,19 @@ details.settings-group .group-content {
     box-sizing: border-box;
     text-align: center;
     z-index: 3;
-    transition: all 0.2s ease;
 }
+#preview-title-bar-top { top: 0; border-bottom: 1px dashed rgba(255,255,255,0.08); }
+#preview-title-bar-bottom { bottom: 0; border-top: 1px dashed rgba(255,255,255,0.08); }
 
-#preview-title-bar-top {
-    top: 0;
-    border-bottom: 1px dashed rgba(255,255,255,0.08);
-}
-
-#preview-title-bar-bottom {
-    bottom: 0;
-    border-top: 1px dashed rgba(255,255,255,0.08);
-}
-
-/* Título Estándar Flotante (Dentro de la caja de texto) */
 .preview-title-inline {
     width: 100%;
-    font-size: calc(2.2 * 1cqh); /* Escala dinámicamente */
+    font-size: calc(2.2 * 1cqh);
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     box-sizing: border-box;
     text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
+
+.hidden { display: none !important; }

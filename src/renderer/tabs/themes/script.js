@@ -1,249 +1,283 @@
 import { selectTab } from '../../control/script.js';
 
-// --- ESTADOS INTERNOS DEL MÓDULO ---
+// --- ESTADOS INTERNOS ---
 let settingsData = null;
 let scannedFonts = [];
 let scannedMedia = [];
-
 let selectedThemeId = null;
 let activeAlignH = 'center';
 let activeAlignV = 'center';
 
-// --- ELEMENTOS DE LA INTERFAZ ---
+// --- ELEMENTOS ---
 let themesList, btnCreateTheme;
 let selectGlobalBible, selectGlobalSongs, selectGlobalNotes;
-let editorHeaderTitle, themeNameInput, themeFontSelect, themeSizeSlider, themeSizeVal;
+let editorHeaderTitle, themeNameInput, themeFontSelect;
+let themeSizeSlider, themeSizeVal;
 let themeLineHeight, themeLineHeightVal, themeLetterSpacing, themeLetterSpacingVal;
-let themeCheckBold, themeCheckItalic, themeCheckUppercase;
-let themeColorInput, themeShadowColorInput;
+let btnBold, btnItalic, btnUppercase;
+let themeColorInput;
 
-// Contorno, Caja de Relleno, Título y Comentarios
-let themeCheckStroke, strokeControlsRow, themeStrokeColor, themeStrokeWidth, themeStrokeWidthVal;
-let themeCheckFillbox, fillboxControlsRow, themeFillboxColor, themeFillboxOpacity, themeFillboxOpacityVal;
-let themeTitlePos, titleBarControlsRow, themeTitleBarColor, themeTitleBarOpacity, themeTitleBarOpacityVal;
-let themeCheckComments;
+// Sombra
+let themeShadowColorInput, themeShadowOpacity, themeShadowOpacityVal, themeShadowBlur, themeShadowBlurVal;
 
-let themeBgTypeSelect, groupBgMedia, themeBgMediaSelect, groupBgColor, themeBgColorInput;
-let btnDeleteTheme, btnSaveTheme;
-let settingsSaveStatus;
+// Glow
+let btnToggleGlow, glowControls, themeGlowColor, themeGlowBlur, themeGlowBlurVal;
 
-// Vista Previa (Elementos fijos de título)
-let themePreviewBox, previewBgVideo, previewBgImage, previewTextOverlay, previewTextContent;
-let previewTextBox;
+// Contorno
+let btnToggleStroke, strokeControls, themeStrokeColor, themeStrokeWidth, themeStrokeWidthVal;
+
+// Caja de relleno
+let btnToggleFillbox, fillboxControls, themeFillboxColor, themeFillboxOpacity, themeFillboxOpacityVal, themeFillboxPadding, themeFillboxPaddingVal;
+
+// Alineación y margen
+let themePadding, themePaddingVal;
+
+// Título Biblia
+let themeTitlePos, titleBarControls, themeTitleBarColor, themeTitleBarOpacity, themeTitleBarOpacityVal;
+let btnToggleComments;
+
+// Fondo
+let themeBgTypeSelect, groupBgMedia, themeBgMediaSelect, groupBgColor, themeBgColorInput, groupBgVideoFx;
+let themeBrightness, themeBrightnessVal, themeVideoOpacity, themeVideoOpacityVal, themeVideoSpeed, themeVideoSpeedVal;
+
+// Acciones
+let btnDeleteTheme, btnSaveTheme, settingsSaveStatus;
+
+// Preview
+let themePreviewBox, previewBgVideo, previewBgImage, previewTextOverlay, previewTextContent, previewTextBox;
 let previewTitleBarTop, previewTitleBarBottom, previewTitleInlineTop, previewTitleInlineBottom;
 
 export async function init() {
-    // 1. Vincular elementos del catálogo de temas
+    // Catálogo
     themesList = document.getElementById('themes-list');
     btnCreateTheme = document.getElementById('btn-create-theme');
     selectGlobalBible = document.getElementById('select-global-bible');
     selectGlobalSongs = document.getElementById('select-global-songs');
     selectGlobalNotes = document.getElementById('select-global-notes');
 
-    // Vincular controles de Atributos
+    // General y fuente
     editorHeaderTitle = document.getElementById('editor-header-title');
     themeNameInput = document.getElementById('theme-name');
     themeFontSelect = document.getElementById('theme-font-select');
-    
     themeSizeSlider = document.getElementById('theme-size-slider');
     themeSizeVal = document.getElementById('theme-size-val');
-    
     themeLineHeight = document.getElementById('theme-line-height');
     themeLineHeightVal = document.getElementById('theme-line-height-val');
     themeLetterSpacing = document.getElementById('theme-letter-spacing');
     themeLetterSpacingVal = document.getElementById('theme-letter-spacing-val');
-
-    themeCheckBold = document.getElementById('theme-check-bold');
-    themeCheckItalic = document.getElementById('theme-check-italic');
-    themeCheckUppercase = document.getElementById('theme-check-uppercase');
-
+    btnBold = document.getElementById('theme-check-bold');
+    btnItalic = document.getElementById('theme-check-italic');
+    btnUppercase = document.getElementById('theme-check-uppercase');
     themeColorInput = document.getElementById('theme-color');
-    themeShadowColorInput = document.getElementById('theme-shadow-color');
 
-    // Contorno, Caja y Título
-    themeCheckStroke = document.getElementById('theme-check-stroke');
-    strokeControlsRow = document.getElementById('stroke-controls-row');
+    // Sombra y glow
+    themeShadowColorInput = document.getElementById('theme-shadow-color');
+    themeShadowOpacity = document.getElementById('theme-shadow-opacity');
+    themeShadowOpacityVal = document.getElementById('theme-shadow-opacity-val');
+    themeShadowBlur = document.getElementById('theme-shadow-blur');
+    themeShadowBlurVal = document.getElementById('theme-shadow-blur-val');
+    btnToggleGlow = document.getElementById('btn-toggle-glow');
+    glowControls = document.getElementById('glow-controls');
+    themeGlowColor = document.getElementById('theme-glow-color');
+    themeGlowBlur = document.getElementById('theme-glow-blur');
+    themeGlowBlurVal = document.getElementById('theme-glow-blur-val');
+
+    // Contorno
+    btnToggleStroke = document.getElementById('btn-toggle-stroke');
+    strokeControls = document.getElementById('stroke-controls');
     themeStrokeColor = document.getElementById('theme-stroke-color');
     themeStrokeWidth = document.getElementById('theme-stroke-width');
     themeStrokeWidthVal = document.getElementById('theme-stroke-width-val');
 
-    themeCheckFillbox = document.getElementById('theme-check-fillbox');
-    fillboxControlsRow = document.getElementById('fillbox-controls-row');
+    // Caja de relleno
+    btnToggleFillbox = document.getElementById('btn-toggle-fillbox');
+    fillboxControls = document.getElementById('fillbox-controls');
     themeFillboxColor = document.getElementById('theme-fillbox-color');
     themeFillboxOpacity = document.getElementById('theme-fillbox-opacity');
     themeFillboxOpacityVal = document.getElementById('theme-fillbox-opacity-val');
+    themeFillboxPadding = document.getElementById('theme-fillbox-padding');
+    themeFillboxPaddingVal = document.getElementById('theme-fillbox-padding-val');
 
+    // Alineación y margen
+    themePadding = document.getElementById('theme-padding');
+    themePaddingVal = document.getElementById('theme-padding-val');
+
+    // Título Biblia
     themeTitlePos = document.getElementById('theme-title-pos');
-    titleBarControlsRow = document.getElementById('title-bar-controls-row');
+    titleBarControls = document.getElementById('title-bar-controls');
     themeTitleBarColor = document.getElementById('theme-title-bar-color');
     themeTitleBarOpacity = document.getElementById('theme-title-bar-opacity');
     themeTitleBarOpacityVal = document.getElementById('theme-title-bar-opacity-val');
+    btnToggleComments = document.getElementById('btn-toggle-comments');
 
-    themeCheckComments = document.getElementById('theme-check-comments');
-
+    // Fondo
     themeBgTypeSelect = document.getElementById('theme-bg-type');
     groupBgMedia = document.getElementById('group-bg-media');
     themeBgMediaSelect = document.getElementById('theme-bg-media');
     groupBgColor = document.getElementById('group-bg-color');
     themeBgColorInput = document.getElementById('theme-bg-color');
+    groupBgVideoFx = document.getElementById('group-bg-video-fx');
+    themeBrightness = document.getElementById('theme-video-brightness');
+    themeBrightnessVal = document.getElementById('theme-video-brightness-val');
+    themeVideoOpacity = document.getElementById('theme-video-opacity');
+    themeVideoOpacityVal = document.getElementById('theme-video-opacity-val');
+    themeVideoSpeed = document.getElementById('theme-video-speed');
+    themeVideoSpeedVal = document.getElementById('theme-video-speed-val');
 
+    // Acciones
     btnDeleteTheme = document.getElementById('btn-delete-theme');
     btnSaveTheme = document.getElementById('btn-save-theme');
     settingsSaveStatus = document.getElementById('settings-save-status');
 
-    // Vincular Vista Previa
+    // Preview
     themePreviewBox = document.getElementById('theme-preview-box');
     previewBgVideo = document.getElementById('preview-bg-video');
     previewBgImage = document.getElementById('preview-bg-image');
     previewTextOverlay = document.getElementById('preview-text-overlay');
     previewTextContent = document.getElementById('preview-text-content');
     previewTextBox = document.getElementById('preview-text-box');
-    
-    // Las 4 posiciones del título en el HTML
     previewTitleBarTop = document.getElementById('preview-title-bar-top');
     previewTitleBarBottom = document.getElementById('preview-title-bar-bottom');
     previewTitleInlineTop = document.getElementById('preview-title-inline-top');
     previewTitleInlineBottom = document.getElementById('preview-title-inline-bottom');
 
-    // 2. Escuchar cambios de interfaz en tiempo real (Live Preview)
+    // --- LISTENERS ---
+
+    // Fuente
     themeNameInput.addEventListener('input', updatePreview);
     themeFontSelect.addEventListener('change', updatePreview);
-    
-    themeSizeSlider.addEventListener('input', () => {
-        themeSizeVal.textContent = `${themeSizeSlider.value} vh`;
-        updatePreview();
-    });
-    themeLineHeight.addEventListener('input', () => {
-        themeLineHeightVal.textContent = themeLineHeight.value;
-        updatePreview();
-    });
-    themeLetterSpacing.addEventListener('input', () => {
-        themeLetterSpacingVal.textContent = `${themeLetterSpacing.value} px`;
-        updatePreview();
-    });
-
-    themeCheckBold.addEventListener('change', updatePreview);
-    themeCheckItalic.addEventListener('change', updatePreview);
-    themeCheckUppercase.addEventListener('change', updatePreview);
-
+    themeSizeSlider.addEventListener('input', () => { themeSizeVal.textContent = `${themeSizeSlider.value} vh`; updatePreview(); });
+    themeLineHeight.addEventListener('input', () => { themeLineHeightVal.textContent = themeLineHeight.value; updatePreview(); });
+    themeLetterSpacing.addEventListener('input', () => { themeLetterSpacingVal.textContent = `${themeLetterSpacing.value} px`; updatePreview(); });
     themeColorInput.addEventListener('input', updatePreview);
+
+    // Toggle buttons tipografía
+    [btnBold, btnItalic, btnUppercase].forEach(btn => {
+        btn.addEventListener('click', () => {
+            const isActive = btn.dataset.active === 'true';
+            btn.dataset.active = String(!isActive);
+            btn.classList.toggle('active', !isActive);
+            updatePreview();
+        });
+    });
+
+    // Sombra
     themeShadowColorInput.addEventListener('input', updatePreview);
+    themeShadowOpacity.addEventListener('input', () => { themeShadowOpacityVal.textContent = `${Math.round(themeShadowOpacity.value * 100)}%`; updatePreview(); });
+    themeShadowBlur.addEventListener('input', () => { themeShadowBlurVal.textContent = `${themeShadowBlur.value} px`; updatePreview(); });
 
-    // Contorno (Toggle)
-    themeCheckStroke.addEventListener('change', () => {
-        strokeControlsRow.classList.toggle('hidden', !themeCheckStroke.checked);
-        updatePreview();
-    });
+    // Glow
+    btnToggleGlow.addEventListener('click', () => toggleFeature(btnToggleGlow, glowControls));
+    themeGlowColor.addEventListener('input', updatePreview);
+    themeGlowBlur.addEventListener('input', () => { themeGlowBlurVal.textContent = `${themeGlowBlur.value} px`; updatePreview(); });
+
+    // Contorno
+    btnToggleStroke.addEventListener('click', () => toggleFeature(btnToggleStroke, strokeControls));
     themeStrokeColor.addEventListener('input', updatePreview);
-    themeStrokeWidth.addEventListener('input', () => {
-        themeStrokeWidthVal.textContent = `${themeStrokeWidth.value} px`;
-        updatePreview();
-    });
+    themeStrokeWidth.addEventListener('input', () => { themeStrokeWidthVal.textContent = `${themeStrokeWidth.value} px`; updatePreview(); });
 
-    // Caja de Relleno (Toggle)
-    themeCheckFillbox.addEventListener('change', () => {
-        fillboxControlsRow.classList.toggle('hidden', !themeCheckFillbox.checked);
-        updatePreview();
-    });
+    // Caja de relleno
+    btnToggleFillbox.addEventListener('click', () => toggleFeature(btnToggleFillbox, fillboxControls));
     themeFillboxColor.addEventListener('input', updatePreview);
-    themeFillboxOpacity.addEventListener('input', () => {
-        themeFillboxOpacityVal.textContent = `${Math.round(themeFillboxOpacity.value * 100)} %`;
-        updatePreview();
-    });
+    themeFillboxOpacity.addEventListener('input', () => { themeFillboxOpacityVal.textContent = `${Math.round(themeFillboxOpacity.value * 100)}%`; updatePreview(); });
+    themeFillboxPadding.addEventListener('input', () => { themeFillboxPaddingVal.textContent = `${themeFillboxPadding.value} px`; updatePreview(); });
 
-    // Título de Biblia (Toggle)
+    // Margen de pantalla
+    themePadding.addEventListener('input', () => { themePaddingVal.textContent = `${themePadding.value} px`; updatePreview(); });
+
+    // Título Biblia
     themeTitlePos.addEventListener('change', () => {
-        const isBar = themeTitlePos.value.startsWith('bar-');
-        titleBarControlsRow.classList.toggle('hidden', !isBar);
+        titleBarControls.classList.toggle('hidden', !themeTitlePos.value.startsWith('bar-'));
         updatePreview();
     });
     themeTitleBarColor.addEventListener('input', updatePreview);
-    themeTitleBarOpacity.addEventListener('input', () => {
-        themeTitleBarOpacityVal.textContent = `${Math.round(themeTitleBarOpacity.value * 100)} %`;
-        updatePreview();
+    themeTitleBarOpacity.addEventListener('input', () => { themeTitleBarOpacityVal.textContent = `${Math.round(themeTitleBarOpacity.value * 100)}%`; updatePreview(); });
+    btnToggleComments.addEventListener('click', () => {
+        const isActive = btnToggleComments.dataset.active === 'true';
+        btnToggleComments.dataset.active = String(!isActive);
+        btnToggleComments.classList.toggle('active', !isActive);
     });
 
+    // Fondo
     themeBgTypeSelect.addEventListener('change', handleBgTypeChange);
     themeBgMediaSelect.addEventListener('change', updatePreview);
     themeBgColorInput.addEventListener('input', updatePreview);
+    themeBrightness.addEventListener('input', () => { themeBrightnessVal.textContent = `${themeBrightness.value}%`; updatePreview(); });
+    themeVideoOpacity.addEventListener('input', () => { themeVideoOpacityVal.textContent = `${themeVideoOpacity.value}%`; updatePreview(); });
+    themeVideoSpeed.addEventListener('input', () => { themeVideoSpeedVal.textContent = `${themeVideoSpeed.value}×`; updatePreview(); });
 
     // Alineación
-    const alignHButtons = document.querySelectorAll('#align-h-grid .btn-align');
-    const alignVGrid = document.querySelectorAll('#align-v-grid .btn-align');
-    alignHButtons.forEach(btn => btn.addEventListener('click', () => setAlignH(btn.dataset.align)));
-    alignVGrid.forEach(btn => btn.addEventListener('click', () => setAlignV(btn.dataset.align)));
+    document.querySelectorAll('#align-h-grid .btn-align').forEach(btn => btn.addEventListener('click', () => setAlignH(btn.dataset.align)));
+    document.querySelectorAll('#align-v-grid .btn-align').forEach(btn => btn.addEventListener('click', () => setAlignV(btn.dataset.align)));
 
-    // Guardado y eliminación
+    // Acciones
     btnCreateTheme.addEventListener('click', createNewTheme);
     btnSaveTheme.addEventListener('click', saveActiveTheme);
     btnDeleteTheme.addEventListener('click', deleteActiveTheme);
-
-    // Sincronización automática de temas globales
     selectGlobalBible.addEventListener('change', saveGlobalThemeAssociations);
     selectGlobalSongs.addEventListener('change', saveGlobalThemeAssociations);
     selectGlobalNotes.addEventListener('change', saveGlobalThemeAssociations);
 
-    // 3. Inicializar datos portátiles (USB)
+    // Cargar datos
     await loadPortableFonts();
     await loadPortableMedia();
     await loadSettingsAndRender();
 }
 
-// ================= UTILERÍA CONVERSORA HEXADECIMAL A RGBA =================
+// ================= UTILIDADES =================
 
 function hexToRgba(hex, opacity) {
-    let num = parseInt(hex.replace("#", ""), 16);
-    let R = (num >> 16);
-    let G = (num >> 8 & 0x00FF);
-    let B = (num & 0x0000FF);
-    return `rgba(${R}, ${G}, ${B}, ${opacity})`;
+    const num = parseInt(hex.replace('#', ''), 16);
+    return `rgba(${num >> 16}, ${(num >> 8) & 0xFF}, ${num & 0xFF}, ${opacity})`;
 }
 
-// ================= GESTIÓN DE CONFIGURACIONES Y RECURSOS PORTÁTILES =================
+function toggleFeature(btn, controlsEl) {
+    const isActive = btn.dataset.active === 'true';
+    btn.dataset.active = String(!isActive);
+    btn.classList.toggle('active', !isActive);
+    controlsEl.classList.toggle('hidden', isActive);
+    updatePreview();
+}
+
+function setToggleBtn(btn, active) {
+    btn.dataset.active = String(active);
+    btn.classList.toggle('active', active);
+}
+
+// ================= CARGA DE RECURSOS =================
 
 async function loadPortableFonts() {
+    themeFontSelect.innerHTML = '';
+    const defaultFonts = ['Segoe UI', 'Arial', 'Georgia', 'Times New Roman', 'Impact', 'Monospace'];
+    defaultFonts.forEach(font => {
+        const opt = document.createElement('option');
+        opt.value = font; opt.textContent = font;
+        themeFontSelect.appendChild(opt);
+    });
     try {
-        themeFontSelect.innerHTML = '';
-        const defaultFonts = ['Segoe UI', 'Arial', 'Georgia', 'Times New Roman', 'Impact', 'Monospace'];
-        defaultFonts.forEach(font => {
-            const opt = document.createElement('option');
-            opt.value = font;
-            opt.textContent = font;
-            themeFontSelect.appendChild(opt);
-        });
-
         const result = await window.api.getFonts();
-        if (result && result.success && result.fonts.length > 0) {
-            scannedFonts = result.fonts;
-            for (const font of scannedFonts) {
+        if (result?.success && result.fonts.length > 0) {
+            for (const font of result.fonts) {
                 try {
-                    const fontFace = new FontFace(font.name, `url("${font.url}")`);
-                    const loadedFace = await fontFace.load();
-                    document.fonts.add(loadedFace);
-
+                    const face = new FontFace(font.name, `url("${font.url}")`);
+                    document.fonts.add(await face.load());
                     const opt = document.createElement('option');
-                    opt.value = font.name;
-                    opt.textContent = `📂 ${font.name}`;
+                    opt.value = font.name; opt.textContent = `📂 ${font.name}`;
                     themeFontSelect.appendChild(opt);
-                } catch (fontErr) {
-                    console.error("[Themes] Error al registrar fuente:", fontErr);
-                }
+                } catch (e) {}
             }
         }
-    } catch (err) {
-        console.error("[Themes] Error al inicializar fuentes:", err);
-    }
+    } catch (e) {}
 }
 
 async function loadPortableMedia() {
+    themeBgMediaSelect.innerHTML = '';
     try {
-        themeBgMediaSelect.innerHTML = '';
         const result = await window.api.scanMedia();
-        if (result && result.success) {
-            scannedMedia = result.files.filter(f => f.type === 'image' || f.type === 'video');
-            
-            if (scannedMedia.length > 0) {
-                scannedMedia.forEach(m => {
+        if (result?.success) {
+            const media = result.files.filter(f => f.type === 'image' || f.type === 'video');
+            if (media.length > 0) {
+                media.forEach(m => {
                     const opt = document.createElement('option');
                     opt.value = m.url;
                     opt.textContent = `${m.type === 'image' ? '🖼️' : '🎥'} ${m.name}`;
@@ -251,13 +285,11 @@ async function loadPortableMedia() {
                 });
             } else {
                 const opt = document.createElement('option');
-                opt.textContent = "No hay medios en tu USB";
+                opt.textContent = 'No hay medios en tu USB';
                 themeBgMediaSelect.appendChild(opt);
             }
         }
-    } catch (err) {
-        console.error("[Themes] Error al cargar catálogo de medios:", err);
-    }
+    } catch (e) {}
 }
 
 async function loadSettingsAndRender() {
@@ -265,16 +297,10 @@ async function loadSettingsAndRender() {
         settingsData = await window.api.getSettings();
         if (!settingsData.themes) settingsData.themes = [];
         if (!settingsData.songThemes) settingsData.songThemes = {};
-
         renderThemesList();
         renderGlobalSelectors();
-
-        if (settingsData.themes.length > 0) {
-            loadThemeForEditing(settingsData.themes[0].id);
-        }
-    } catch (err) {
-        console.error("[Themes] Error al cargar configuraciones:", err);
-    }
+        if (settingsData.themes.length > 0) loadThemeForEditing(settingsData.themes[0].id);
+    } catch (e) {}
 }
 
 function renderThemesList() {
@@ -284,26 +310,20 @@ function renderThemesList() {
         li.textContent = theme.name;
         li.dataset.id = theme.id;
         if (theme.id === selectedThemeId) li.className = 'active';
-
-        li.addEventListener('click', () => {
-            loadThemeForEditing(theme.id);
-        });
-
+        li.addEventListener('click', () => loadThemeForEditing(theme.id));
         themesList.appendChild(li);
     });
 }
 
 function renderGlobalSelectors() {
-    [selectGlobalBible, selectGlobalSongs, selectGlobalNotes].forEach(select => {
-        select.innerHTML = '';
+    [selectGlobalBible, selectGlobalSongs, selectGlobalNotes].forEach(sel => {
+        sel.innerHTML = '';
         settingsData.themes.forEach(t => {
             const opt = document.createElement('option');
-            opt.value = t.id;
-            opt.textContent = t.name;
-            select.appendChild(opt);
+            opt.value = t.id; opt.textContent = t.name;
+            sel.appendChild(opt);
         });
     });
-
     selectGlobalBible.value = settingsData.defaultBibleTheme || 'default';
     selectGlobalSongs.value = settingsData.defaultSongsTheme || 'default';
     selectGlobalNotes.value = settingsData.defaultNotesTheme || 'default';
@@ -313,360 +333,323 @@ async function saveGlobalThemeAssociations() {
     settingsData.defaultBibleTheme = selectGlobalBible.value;
     settingsData.defaultSongsTheme = selectGlobalSongs.value;
     settingsData.defaultNotesTheme = selectGlobalNotes.value;
-
     try {
         await window.api.saveSettings(settingsData);
-        showStatus("✓ Temas predeterminados guardados.");
-    } catch (err) {
-        console.error("[Themes] Error al guardar asociaciones globales:", err);
-    }
+        showStatus('✓ Temas predeterminados guardados.');
+    } catch (e) {}
 }
 
-// ================= CARGA DE TEMA EN EL EDITOR (COLUMNA 2) =================
+// ================= EDITOR =================
 
 function loadThemeForEditing(themeId) {
     selectedThemeId = themeId;
     renderThemesList();
+    const t = settingsData.themes.find(th => th.id === themeId);
+    if (!t) return;
 
-    const theme = settingsData.themes.find(t => t.id === themeId);
-    if (!theme) return;
+    editorHeaderTitle.textContent = `Editar: ${t.name}`;
+    themeNameInput.value = t.name;
+    themeFontSelect.value = t.fontFamily;
+    themeSizeSlider.value = t.fontSize;
+    themeSizeVal.textContent = `${t.fontSize} vh`;
+    themeLineHeight.value = t.lineHeight || 1.4;
+    themeLineHeightVal.textContent = t.lineHeight || 1.4;
+    themeLetterSpacing.value = t.letterSpacing || 0;
+    themeLetterSpacingVal.textContent = `${t.letterSpacing || 0} px`;
 
-    editorHeaderTitle.textContent = `Editar: ${theme.name}`;
-    themeNameInput.value = theme.name;
-    themeFontSelect.value = theme.fontFamily;
-    themeSizeSlider.value = theme.fontSize;
-    themeSizeVal.textContent = `${theme.fontSize} vh`;
+    setToggleBtn(btnBold, !!t.isBold);
+    setToggleBtn(btnItalic, !!t.isItalic);
+    setToggleBtn(btnUppercase, !!t.isUppercase);
 
-    themeLineHeight.value = theme.lineHeight || 1.4;
-    themeLineHeightVal.textContent = theme.lineHeight || 1.4;
-    themeLetterSpacing.value = theme.letterSpacing || 0;
-    themeLetterSpacingVal.textContent = `${theme.letterSpacing || 0} px`;
+    themeColorInput.value = t.fontColor || '#ffffff';
 
-    themeCheckBold.checked = !!theme.isBold;
-    themeCheckItalic.checked = !!theme.isItalic;
-    themeCheckUppercase.checked = !!theme.isUppercase;
+    // Sombra
+    themeShadowColorInput.value = t.textShadowColor || '#000000';
+    themeShadowOpacity.value = t.textShadowOpacity ?? 0.8;
+    themeShadowOpacityVal.textContent = `${Math.round((t.textShadowOpacity ?? 0.8) * 100)}%`;
+    themeShadowBlur.value = t.textShadowBlur ?? 8;
+    themeShadowBlurVal.textContent = `${t.textShadowBlur ?? 8} px`;
 
-    themeColorInput.value = theme.fontColor;
-    themeShadowColorInput.value = theme.textShadowColor || '#000000';
+    // Glow
+    const hasGlow = !!t.hasGlow;
+    setToggleBtn(btnToggleGlow, hasGlow);
+    glowControls.classList.toggle('hidden', !hasGlow);
+    themeGlowColor.value = t.glowColor || '#ffffff';
+    themeGlowBlur.value = t.glowBlur ?? 10;
+    themeGlowBlurVal.textContent = `${t.glowBlur ?? 10} px`;
 
-    setAlignH(theme.alignH || 'center');
-    setAlignV(theme.alignV || 'center');
+    // Contorno
+    const hasStroke = !!t.hasStroke;
+    setToggleBtn(btnToggleStroke, hasStroke);
+    strokeControls.classList.toggle('hidden', !hasStroke);
+    themeStrokeColor.value = t.strokeColor || '#000000';
+    themeStrokeWidth.value = t.strokeWidth || 1;
+    themeStrokeWidthVal.textContent = `${t.strokeWidth || 1} px`;
 
-    // Contorno (Stroke)
-    themeCheckStroke.checked = !!theme.hasStroke;
-    strokeControlsRow.classList.toggle('hidden', !theme.hasStroke);
-    themeStrokeColor.value = theme.strokeColor || '#000000';
-    themeStrokeWidth.value = theme.strokeWidth || 1;
-    themeStrokeWidthVal.textContent = `${theme.strokeWidth || 1} px`;
+    // Caja de relleno
+    const hasFillBox = !!t.hasFillBox;
+    setToggleBtn(btnToggleFillbox, hasFillBox);
+    fillboxControls.classList.toggle('hidden', !hasFillBox);
+    themeFillboxColor.value = t.fillBoxColorHex || '#000000';
+    themeFillboxOpacity.value = t.fillBoxOpacity ?? 0.5;
+    themeFillboxOpacityVal.textContent = `${Math.round((t.fillBoxOpacity ?? 0.5) * 100)}%`;
+    themeFillboxPadding.value = t.fillBoxPadding ?? 15;
+    themeFillboxPaddingVal.textContent = `${t.fillBoxPadding ?? 15} px`;
 
-    // Caja de relleno (Fill Box)
-    themeCheckFillbox.checked = !!theme.hasFillBox;
-    fillboxControlsRow.classList.toggle('hidden', !theme.hasFillBox);
-    themeFillboxColor.value = theme.fillBoxColorHex || '#000000';
-    themeFillboxOpacity.value = theme.fillBoxOpacity !== undefined ? theme.fillBoxOpacity : 0.5;
-    themeFillboxOpacityVal.textContent = `${Math.round((theme.fillBoxOpacity !== undefined ? theme.fillBoxOpacity : 0.5) * 100)} %`;
+    // Margen
+    themePadding.value = t.textPadding ?? 40;
+    themePaddingVal.textContent = `${t.textPadding ?? 40} px`;
 
-    // Título de Biblia
-    themeTitlePos.value = theme.verseTitlePos || 'top';
-    const isBar = themeTitlePos.value.startsWith('bar-');
-    titleBarControlsRow.classList.toggle('hidden', !isBar);
-    themeTitleBarColor.value = theme.titleBarColorHex || '#000000';
-    themeTitleBarOpacity.value = theme.titleBarOpacity !== undefined ? theme.titleBarOpacity : 0.6;
-    themeTitleBarOpacityVal.textContent = `${Math.round((theme.titleBarOpacity !== undefined ? theme.titleBarOpacity : 0.6) * 100)} %`;
+    setAlignH(t.alignH || 'center');
+    setAlignV(t.alignV || 'center');
 
-    // Comentarios
-    themeCheckComments.checked = theme.hideComments !== undefined ? theme.hideComments : true;
+    // Título Biblia
+    themeTitlePos.value = t.verseTitlePos || 'top';
+    titleBarControls.classList.toggle('hidden', !themeTitlePos.value.startsWith('bar-'));
+    themeTitleBarColor.value = t.titleBarColorHex || '#000000';
+    themeTitleBarOpacity.value = t.titleBarOpacity ?? 0.6;
+    themeTitleBarOpacityVal.textContent = `${Math.round((t.titleBarOpacity ?? 0.6) * 100)}%`;
+    const hideComments = t.hideComments !== undefined ? t.hideComments : true;
+    setToggleBtn(btnToggleComments, hideComments);
 
-    themeBgTypeSelect.value = theme.bgType || 'color';
+    // Fondo
+    themeBgTypeSelect.value = t.bgType || 'color';
     handleBgTypeChange();
-
-    if (theme.bgType === 'color') {
-        themeBgColorInput.value = theme.bgPath || '#131316';
+    if (t.bgType === 'color') {
+        themeBgColorInput.value = t.bgPath || '#131316';
     } else {
-        themeBgMediaSelect.value = theme.bgPath || '';
+        themeBgMediaSelect.value = t.bgPath || '';
     }
 
-    btnDeleteTheme.disabled = theme.id === 'default';
+    // Video fx
+    themeBrightness.value = t.videoBrightness ?? 100;
+    themeBrightnessVal.textContent = `${t.videoBrightness ?? 100}%`;
+    themeVideoOpacity.value = t.videoOpacity ?? 100;
+    themeVideoOpacityVal.textContent = `${t.videoOpacity ?? 100}%`;
+    themeVideoSpeed.value = t.videoSpeed ?? 1;
+    themeVideoSpeedVal.textContent = `${t.videoSpeed ?? 1}×`;
 
+    btnDeleteTheme.disabled = t.id === 'default';
     updatePreview();
 }
 
 function handleBgTypeChange() {
     const type = themeBgTypeSelect.value;
-    if (type === 'color') {
-        groupBgColor.style.display = 'flex';
-        groupBgMedia.style.display = 'none';
-    } else {
-        groupBgColor.style.display = 'none';
-        groupBgMedia.style.display = 'flex';
-    }
+    groupBgColor.style.display = type === 'color' ? 'flex' : 'none';
+    groupBgMedia.style.display = type !== 'color' ? 'flex' : 'none';
+    groupBgVideoFx.style.display = type === 'video' ? 'block' : 'none';
     updatePreview();
 }
 
 function setAlignH(align) {
     activeAlignH = align;
-    const alignHButtons = document.querySelectorAll('#align-h-grid .btn-align');
-    alignHButtons.forEach(btn => {
-        if (btn.dataset.align === align) btn.classList.add('active');
-        else btn.classList.remove('active');
-    });
+    document.querySelectorAll('#align-h-grid .btn-align').forEach(btn => btn.classList.toggle('active', btn.dataset.align === align));
     updatePreview();
 }
-
 function setAlignV(align) {
     activeAlignV = align;
-    const alignVGrid = document.querySelectorAll('#align-v-grid .btn-align');
-    alignVGrid.forEach(btn => {
-        if (btn.dataset.align === align) btn.classList.add('active');
-        else btn.classList.remove('active');
-    });
+    document.querySelectorAll('#align-v-grid .btn-align').forEach(btn => btn.classList.toggle('active', btn.dataset.align === align));
     updatePreview();
 }
 
-// ================= VISTA PREVIA COMPLETA EN TIEMPO REAL (CONTAINER QUERIES) =================
+// ================= VISTA PREVIA =================
 
 function updatePreview() {
-    // --- TRUCO CLAVE: Pasar el tamaño, interlineado y espaciado a variables CSS en el contenedor ---
-    // De esta forma, el CSS de Container Queries escala la letra proporcionalmente al alto del visor (cqh)
+    const padding = parseInt(themePadding.value);
     themePreviewBox.style.setProperty('--theme-font-size', themeSizeSlider.value);
     themePreviewBox.style.setProperty('--theme-line-height', themeLineHeight.value);
     themePreviewBox.style.setProperty('--theme-letter-spacing', `${themeLetterSpacing.value}px`);
+    themePreviewBox.style.setProperty('--theme-padding', padding);
 
-    // 1. Estilo y formato de fuente
+    // Fuente
     previewTextContent.style.fontFamily = themeFontSelect.value;
     previewTextContent.style.color = themeColorInput.value;
+    previewTextContent.style.fontWeight = btnBold.dataset.active === 'true' ? 'bold' : 'normal';
+    previewTextContent.style.fontStyle = btnItalic.dataset.active === 'true' ? 'italic' : 'normal';
+    previewTextContent.style.textTransform = btnUppercase.dataset.active === 'true' ? 'uppercase' : 'none';
 
-    // Estilos tipográficos (Negrita, Cursiva, Mayúsculas)
-    previewTextContent.style.fontWeight = themeCheckBold.checked ? 'bold' : 'normal';
-    previewTextContent.style.fontStyle = themeCheckItalic.checked ? 'italic' : 'normal';
-    previewTextContent.style.textTransform = themeCheckUppercase.checked ? 'uppercase' : 'none';
+    // Sombra + Glow combinados en text-shadow
+    const shadowColor = hexToRgba(themeShadowColorInput.value, parseFloat(themeShadowOpacity.value));
+    const blur = themeShadowBlur.value;
+    let shadows = `2px 2px ${blur}px ${shadowColor}`;
 
-    // Sombra del texto
-    const shadowColor = themeShadowColorInput.value;
-    previewTextContent.style.textShadow = `2px 2px 8px ${shadowColor}`;
-
-    // 2. Contorno de texto (Stroke)
-    if (themeCheckStroke.checked) {
-        previewTextContent.style.webkitTextStroke = `${themeStrokeWidth.value}px ${themeStrokeColor.value}`;
-    } else {
-        previewTextContent.style.webkitTextStroke = '0px transparent';
+    if (btnToggleGlow.dataset.active === 'true') {
+        const glowColor = themeGlowColor.value;
+        const glowB = themeGlowBlur.value;
+        shadows += `, 0 0 ${glowB}px ${glowColor}, 0 0 ${parseInt(glowB) * 2}px ${glowColor}`;
     }
+    previewTextContent.style.textShadow = shadows;
 
-    // 3. Caja de relleno de texto única (Bounding Box)
-    if (themeCheckFillbox.checked) {
-        const rgbaColor = hexToRgba(themeFillboxColor.value, themeFillboxOpacity.value);
-        previewTextBox.style.backgroundColor = rgbaColor;
-        previewTextBox.style.padding = '3% 5%'; // Usamos porcentajes para que la caja también sea adaptativa
+    // Contorno
+    previewTextContent.style.webkitTextStroke = btnToggleStroke.dataset.active === 'true'
+        ? `${themeStrokeWidth.value}px ${themeStrokeColor.value}`
+        : '0px transparent';
+
+    // Caja de relleno
+    if (btnToggleFillbox.dataset.active === 'true') {
+        previewTextBox.style.backgroundColor = hexToRgba(themeFillboxColor.value, parseFloat(themeFillboxOpacity.value));
+        previewTextBox.style.padding = `${themeFillboxPadding.value}px`;
+        previewTextBox.style.borderRadius = '6px';
     } else {
         previewTextBox.style.backgroundColor = 'transparent';
         previewTextBox.style.padding = '0';
     }
 
-    // 4. Lógica de Títulos Fijos (Apagar todos y encender solo el activo)
-    previewTitleBarTop.style.display = 'none';
-    previewTitleBarBottom.style.display = 'none';
-    previewTitleInlineTop.style.display = 'none';
-    previewTitleInlineBottom.style.display = 'none';
-
+    // Título
+    [previewTitleBarTop, previewTitleBarBottom, previewTitleInlineTop, previewTitleInlineBottom].forEach(el => el.style.display = 'none');
     const tPos = themeTitlePos.value;
-
     if (tPos === 'top') {
         previewTitleInlineTop.style.display = 'block';
-        previewTitleInlineTop.style.color = themeColorInput.value; // Hereda el color del texto
-        previewTitleInlineTop.style.backgroundColor = 'transparent';
+        previewTitleInlineTop.style.color = themeColorInput.value;
     } else if (tPos === 'bottom') {
         previewTitleInlineBottom.style.display = 'block';
         previewTitleInlineBottom.style.color = themeColorInput.value;
-        previewTitleInlineBottom.style.backgroundColor = 'transparent';
     } else if (tPos.startsWith('bar-')) {
-        const rgbaBarColor = hexToRgba(themeTitleBarColor.value, themeTitleBarOpacity.value);
-        
-        if (tPos === 'bar-top') {
-            previewTitleBarTop.style.display = 'block';
-            previewTitleBarTop.style.backgroundColor = rgbaBarColor;
-            previewTitleBarTop.style.color = '#ffffff';
-        } else if (tPos === 'bar-bottom') {
-            previewTitleBarBottom.style.display = 'block';
-            previewTitleBarBottom.style.backgroundColor = rgbaBarColor;
-            previewTitleBarBottom.style.color = '#ffffff';
-        }
+        const barColor = hexToRgba(themeTitleBarColor.value, parseFloat(themeTitleBarOpacity.value));
+        const el = tPos === 'bar-top' ? previewTitleBarTop : previewTitleBarBottom;
+        el.style.display = 'block';
+        el.style.backgroundColor = barColor;
+        el.style.color = '#ffffff';
     }
 
-    // 5. Alineación Horizontal con Flexbox
-    if (activeAlignH === 'left') {
-        previewTextOverlay.style.justifyContent = 'flex-start';
-        previewTextContent.style.textAlign = 'left';
-    } else if (activeAlignH === 'right') {
-        previewTextOverlay.style.justifyContent = 'flex-end';
-        previewTextContent.style.textAlign = 'right';
-    } else {
-        previewTextOverlay.style.justifyContent = 'center';
-        previewTextContent.style.textAlign = 'center';
-    }
+    // Alineación
+    previewTextOverlay.style.justifyContent = activeAlignH === 'left' ? 'flex-start' : activeAlignH === 'right' ? 'flex-end' : 'center';
+    previewTextOverlay.style.alignItems = activeAlignV === 'top' ? 'flex-start' : activeAlignV === 'bottom' ? 'flex-end' : 'center';
+    previewTextContent.style.textAlign = activeAlignH;
 
-    // 6. Alineación Vertical con Flexbox
-    if (activeAlignV === 'top') {
-        previewTextOverlay.style.alignItems = 'flex-start';
-    } else if (activeAlignV === 'bottom') {
-        previewTextOverlay.style.alignItems = 'flex-end';
-    } else {
-        previewTextOverlay.style.alignItems = 'center';
-    }
-
-    // 7. Renderizar Fondo Dinámico de Vista Previa
+    // Fondo
     const bgType = themeBgTypeSelect.value;
     previewBgImage.style.display = 'none';
     previewBgVideo.style.display = 'none';
     previewBgVideo.pause();
-    previewBgVideo.src = '';
 
     if (bgType === 'color') {
         themePreviewBox.style.backgroundColor = themeBgColorInput.value;
     } else {
         themePreviewBox.style.backgroundColor = '#000';
-        const selectedUrl = themeBgMediaSelect.value;
-
-        if (selectedUrl) {
+        const url = themeBgMediaSelect.value;
+        if (url) {
             if (bgType === 'image') {
-                previewBgImage.src = selectedUrl;
+                previewBgImage.src = url;
                 previewBgImage.style.display = 'block';
+                previewBgImage.style.filter = `brightness(${themeBrightness.value}%)`;
+                previewBgImage.style.opacity = themeVideoOpacity.value / 100;
             } else if (bgType === 'video') {
-                previewBgVideo.src = selectedUrl;
+                if (previewBgVideo.src !== url) previewBgVideo.src = url;
                 previewBgVideo.style.display = 'block';
-                previewBgVideo.play().catch(err => console.error("Error vista previa video:", err));
+                previewBgVideo.style.filter = `brightness(${themeBrightness.value}%)`;
+                previewBgVideo.style.opacity = themeVideoOpacity.value / 100;
+                previewBgVideo.playbackRate = parseFloat(themeVideoSpeed.value);
+                previewBgVideo.play().catch(() => {});
             }
         }
     }
 }
 
-// ================= GUARDADO Y ELIMINACIÓN DE TEMAS =================
+// ================= GUARDADO =================
 
 function createNewTheme() {
     const newId = `theme-${Date.now()}`;
-    const newThemeObj = {
-        id: newId,
-        name: "Nuevo Tema",
-        fontFamily: "Segoe UI",
-        fontSize: 5,
-        lineHeight: 1.4,
-        letterSpacing: 0,
-        isBold: false,
-        isItalic: false,
-        isUppercase: false,
-        fontColor: "#ffffff",
-        textShadowColor: "#000000",
-        hasStroke: false,
-        strokeColor: "#000000",
-        strokeWidth: 1,
-        hasFillBox: false,
-        fillBoxColorHex: "#000000",
-        fillBoxOpacity: 0.5,
-        verseTitlePos: "top",
-        titleBarColorHex: "#000000",
-        titleBarOpacity: 0.6,
-        hideComments: true,
-        alignH: "center",
-        alignV: "center",
-        bgType: "color",
-        bgPath: "#131316"
-    };
-
-    settingsData.themes.push(newThemeObj);
+    settingsData.themes.push({
+        id: newId, name: 'Nuevo Tema',
+        fontFamily: 'Segoe UI', fontSize: 5,
+        lineHeight: 1.4, letterSpacing: 0,
+        isBold: false, isItalic: false, isUppercase: false,
+        fontColor: '#ffffff',
+        textShadowColor: '#000000', textShadowOpacity: 0.8, textShadowBlur: 8,
+        hasGlow: false, glowColor: '#ffffff', glowBlur: 10,
+        hasStroke: false, strokeColor: '#000000', strokeWidth: 1,
+        hasFillBox: false, fillBoxColorHex: '#000000', fillBoxOpacity: 0.5, fillBoxPadding: 15,
+        textPadding: 40,
+        verseTitlePos: 'top', titleBarColorHex: '#000000', titleBarOpacity: 0.6,
+        hideComments: true, alignH: 'center', alignV: 'center',
+        bgType: 'color', bgPath: '#131316',
+        videoBrightness: 100, videoOpacity: 100, videoSpeed: 1
+    });
     loadThemeForEditing(newId);
-    showStatus("✓ Tema creado.");
+    showStatus('✓ Tema creado.');
 }
 
 async function saveActiveTheme() {
-    const themeIndex = settingsData.themes.findIndex(t => t.id === selectedThemeId);
-    if (themeIndex === -1) return;
+    const idx = settingsData.themes.findIndex(t => t.id === selectedThemeId);
+    if (idx === -1) return;
+    const t = settingsData.themes[idx];
 
-    const theme = settingsData.themes[themeIndex];
-    theme.name = themeNameInput.value.trim() || "Tema sin nombre";
-    theme.fontFamily = themeFontSelect.value;
-    theme.fontSize = parseFloat(themeSizeSlider.value);
-    
-    theme.lineHeight = parseFloat(themeLineHeight.value);
-    theme.letterSpacing = parseInt(themeLetterSpacing.value);
+    t.name = themeNameInput.value.trim() || 'Tema sin nombre';
+    t.fontFamily = themeFontSelect.value;
+    t.fontSize = parseFloat(themeSizeSlider.value);
+    t.lineHeight = parseFloat(themeLineHeight.value);
+    t.letterSpacing = parseInt(themeLetterSpacing.value);
+    t.isBold = btnBold.dataset.active === 'true';
+    t.isItalic = btnItalic.dataset.active === 'true';
+    t.isUppercase = btnUppercase.dataset.active === 'true';
+    t.fontColor = themeColorInput.value;
 
-    theme.isBold = themeCheckBold.checked;
-    theme.isItalic = themeCheckItalic.checked;
-    theme.isUppercase = themeCheckUppercase.checked;
+    t.textShadowColor = themeShadowColorInput.value;
+    t.textShadowOpacity = parseFloat(themeShadowOpacity.value);
+    t.textShadowBlur = parseInt(themeShadowBlur.value);
 
-    theme.fontColor = themeColorInput.value;
-    theme.textShadowColor = themeShadowColorInput.value;
-    theme.alignH = activeAlignH;
-    theme.alignV = activeAlignV;
+    t.hasGlow = btnToggleGlow.dataset.active === 'true';
+    t.glowColor = themeGlowColor.value;
+    t.glowBlur = parseInt(themeGlowBlur.value);
 
-    // Contorno (Stroke)
-    theme.hasStroke = themeCheckStroke.checked;
-    theme.strokeColor = themeStrokeColor.value;
-    theme.strokeWidth = parseFloat(themeStrokeWidth.value);
+    t.hasStroke = btnToggleStroke.dataset.active === 'true';
+    t.strokeColor = themeStrokeColor.value;
+    t.strokeWidth = parseFloat(themeStrokeWidth.value);
 
-    // Caja de relleno (Fill Box)
-    theme.hasFillBox = themeCheckFillbox.checked;
-    theme.fillBoxColorHex = themeFillboxColor.value;
-    theme.fillBoxOpacity = parseFloat(themeFillboxOpacity.value);
+    t.hasFillBox = btnToggleFillbox.dataset.active === 'true';
+    t.fillBoxColorHex = themeFillboxColor.value;
+    t.fillBoxOpacity = parseFloat(themeFillboxOpacity.value);
+    t.fillBoxPadding = parseInt(themeFillboxPadding.value);
 
-    // Título de Biblia
-    theme.verseTitlePos = themeTitlePos.value;
-    theme.titleBarColorHex = themeTitleBarColor.value;
-    theme.titleBarOpacity = parseFloat(themeTitleBarOpacity.value);
+    t.textPadding = parseInt(themePadding.value);
+    t.alignH = activeAlignH;
+    t.alignV = activeAlignV;
 
-    // Comentarios
-    theme.hideComments = themeCheckComments.checked;
+    t.verseTitlePos = themeTitlePos.value;
+    t.titleBarColorHex = themeTitleBarColor.value;
+    t.titleBarOpacity = parseFloat(themeTitleBarOpacity.value);
+    t.hideComments = btnToggleComments.dataset.active === 'true';
 
-    theme.bgType = themeBgTypeSelect.value;
-    if (theme.bgType === 'color') {
-        theme.bgPath = themeBgColorInput.value;
-    } else {
-        theme.bgPath = themeBgMediaSelect.value;
-    }
+    t.bgType = themeBgTypeSelect.value;
+    t.bgPath = t.bgType === 'color' ? themeBgColorInput.value : themeBgMediaSelect.value;
+
+    t.videoBrightness = parseInt(themeBrightness.value);
+    t.videoOpacity = parseInt(themeVideoOpacity.value);
+    t.videoSpeed = parseFloat(themeVideoSpeed.value);
 
     try {
         const result = await window.api.saveSettings(settingsData);
-        if (result && result.success) {
+        if (result?.success) {
             window.dispatchEvent(new CustomEvent('settings-updated'));
             renderThemesList();
             renderGlobalSelectors();
-            showStatus("✓ Tema guardado con éxito.");
+            showStatus('✓ Tema guardado con éxito.');
         }
-    } catch (err) {
-        console.error("[Themes] Error al guardar tema:", err);
-        showStatus("✗ Error al guardar el tema.");
+    } catch (e) {
+        showStatus('✗ Error al guardar el tema.');
     }
 }
 
 async function deleteActiveTheme() {
     if (selectedThemeId === 'default') return;
-    const confirmar = confirm(`¿Estás seguro de que deseas eliminar permanentemente este tema?`);
-    if (!confirmar) return;
-
+    if (!confirm('¿Eliminar permanentemente este tema?')) return;
     settingsData.themes = settingsData.themes.filter(t => t.id !== selectedThemeId);
-
     if (settingsData.defaultBibleTheme === selectedThemeId) settingsData.defaultBibleTheme = 'default';
     if (settingsData.defaultSongsTheme === selectedThemeId) settingsData.defaultSongsTheme = 'default';
     if (settingsData.defaultNotesTheme === selectedThemeId) settingsData.defaultNotesTheme = 'default';
-
-    for (const songId in settingsData.songThemes) {
-        if (settingsData.songThemes[songId] === selectedThemeId) {
-            delete settingsData.songThemes[songId];
-        }
+    for (const id in settingsData.songThemes) {
+        if (settingsData.songThemes[id] === selectedThemeId) delete settingsData.songThemes[id];
     }
-
     try {
         await window.api.saveSettings(settingsData);
         window.dispatchEvent(new CustomEvent('settings-updated'));
-        
         loadThemeForEditing('default');
-        showStatus("✓ Tema eliminado.");
-    } catch (err) {
-        console.error("[Themes] Error al eliminar tema:", err);
-    }
+        showStatus('✓ Tema eliminado.');
+    } catch (e) {}
 }
 
 function showStatus(msg) {
     settingsSaveStatus.textContent = msg;
-    setTimeout(() => {
-        settingsSaveStatus.textContent = "";
-    }, 3000);
+    setTimeout(() => { settingsSaveStatus.textContent = ''; }, 3000);
 }

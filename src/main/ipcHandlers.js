@@ -159,6 +159,20 @@ function setupIpcHandlers() {
     ipcMain.handle('db:delete-sermon-note', async (event, id) => {
         return dbManager.deleteSermonNote(id);
     });
+
+    // Control de ventana personalizada (titlebar)
+    ipcMain.on('window:minimize', () => {
+        const win = BrowserWindow.getFocusedWindow();
+        if (win) win.minimize();
+    });
+    ipcMain.on('window:maximize', () => {
+        const win = BrowserWindow.getFocusedWindow();
+        if (win) win.isMaximized() ? win.unmaximize() : win.maximize();
+    });
+    ipcMain.on('window:close', () => {
+        const win = BrowserWindow.getFocusedWindow();
+        if (win) win.close();
+    });
 }
 
 

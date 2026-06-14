@@ -1,4 +1,5 @@
 import { BIBLE_BOOKS, BIBLE_CAT_COLORS } from '../../../constants/bible.js';
+import { splitTextByWords } from '../../common/textUtils.js';
 
 // --- ESTADOS INTERNOS DEL MÓDULO ---
 let versionsList = [];
@@ -11,6 +12,10 @@ let selectedChapterNum = 1;
 let selectedVerseNum = null;
 
 let activeLiveVerseNum = null; // Almacena el número del versículo proyectado en este momento
+
+// Sub-slides de versículo largo (división por palabras)
+let _pendingChunks = [];
+let _currentChunkIndex = 0;
 
 // Paginación interna de Capítulos (Para Salmos > 75)
 let currentChapterPage = 0;
@@ -468,31 +473,45 @@ async function projectVerse(verseNum, textToProject) {
         const bibleThemeId = settings.defaultBibleTheme || 'default';
         const activeTheme = settings.themes.find(t => t.id === bibleThemeId) || settings.themes[0];
 
-         // --- TRUCO CLAVE: Separar la cita bíblica del texto del versículo ---
+        // --- Separar la cita bíblica del texto del versículo ---
         const partes = textToProject.split('\n\n');
-        const citaBiblica = partes[0] || ""; // Ej: "Génesis 1:1"
-        const textoLimpio = partes[1] || ""; // Ej: ""En un principio...""
+        const citaBiblica = partes[0] || "";
+        const textoLimpio = (partes[1] || "").replace(/^"|"$/g, '').trim();
 
-        // 3. Crear el paquete de datos unificado (Texto + Estilo + Fondo si tiene)
-        const payload = {
-            texto: textoLimpio,
-            cita: citaBiblica,
-            esBiblia: true,
-            estilo: activeTheme,
-            // Si el tema tiene un fondo de imagen o video, lo enviamos de una vez
-            background: activeTheme.bgType !== 'color' ? {
-                path: activeTheme.bgPath,
-                type: activeTheme.bgType
-            } : null,
-            clearBg: activeTheme.bgType === 'color' // Si es color, limpiamos fondos multimedia previos
+        // 3. Dividir por palabras si está configurado
+        const wordLimit = settings.wordSplitLimit ?? 20;
+        const chunks = splitTextByWords(textoLimpio, wordLimit);
+
+        // 4. Proyectar cada chunk con un pequeño delay entre ellos si hay más de uno,
+        //    o solo el primero si el operador navega rápido (proyectamos todos en secuencia
+        //    usando dblclick/enter — el primer chunk va inmediato)
+        const sendChunk = (chunkText) => {
+            const payload = {
+                texto: chunkText,
+                cita: citaBiblica,
+                esBiblia: true,
+                estilo: activeTheme,
+                background: activeTheme.bgType !== 'color' ? {
+                    path: activeTheme.bgPath,
+                    type: activeTheme.bgType
+                } : null,
+                clearBg: activeTheme.bgType === 'color'
+            };
+            window.api.proyectarTexto(payload);
         };
 
-        // 4. Enviar los datos por IPC al proyector
-        window.api.proyectarTexto(payload);
+        if (chunks.length === 1) {
+            sendChunk(chunks[0]);
+        } else {
+            // Si hay múltiples chunks, proyectamos el primero inmediatamente
+            // y registramos los demás para navegar con flechas
+            _pendingChunks = chunks;
+            _currentChunkIndex = 0;
+            sendChunk(_pendingChunks[0]);
+        }
 
     } catch (err) {
         console.error("[Bible] Error al proyectar con estilos de tema:", err);
-        // Fallback: Si algo falla, proyectamos el texto plano para no congelar la pantalla
         window.api.proyectarTexto(textToProject);
     }
 
@@ -574,10 +593,24 @@ function handleGlobalKeydown(e) {
 }
 
 function navigateLiveVerse(direction) {
+    // Si hay chunks pendientes del versículo actual, navegar entre ellos primero
+    if (_pendingChunks.length > 1) {
+        const nextChunk = _currentChunkIndex + direction;
+        if (nextChunk >= 0 && nextChunk < _pendingChunks.length) {
+            _currentChunkIndex = nextChunk;
+            window.api.proyectarTexto({ texto: _pendingChunks[_currentChunkIndex] });
+            return;
+        }
+        // Si llegamos al final/inicio de los chunks, continuamos al siguiente versículo
+    }
+
+    // Navegar al siguiente/anterior versículo
     const totalVerses = bibleTextList.children.length;
     let nextVerse = activeLiveVerseNum + direction;
 
     if (nextVerse >= 1 && nextVerse <= totalVerses) {
+        _pendingChunks = [];
+        _currentChunkIndex = 0;
         const nextLi = bibleTextList.querySelector(`li[data-verse-number="${nextVerse}"]`);
         if (nextLi) {
             selectVerse(nextVerse, true);

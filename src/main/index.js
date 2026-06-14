@@ -13,6 +13,25 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
 let controlWindow = null;
 let projectionWindow = null;
+let splashWindow = null;
+
+function createSplashWindow() {
+    splashWindow = new BrowserWindow({
+        width: 420,
+        height: 260,
+        frame: false,
+        transparent: false,
+        backgroundColor: '#0d0d10',
+        resizable: false,
+        center: true,
+        alwaysOnTop: true,
+        skipTaskbar: true,
+        show: false,
+        webPreferences: { contextIsolation: true }
+    });
+    splashWindow.loadFile(path.join(__dirname, '../renderer/splash/index.html'));
+    splashWindow.once('ready-to-show', () => splashWindow.show());
+}
 
 function createControlWindow() {
     controlWindow = new BrowserWindow({
@@ -20,7 +39,10 @@ function createControlWindow() {
         height: 700,
         minWidth: 800,
         minHeight: 600,
-        title: "Church Display - Control",
+        frame: false,          // Ocultamos la barra nativa
+        titleBarStyle: 'hidden',
+        title: 'Church Display',
+        show: false,           // No mostrar hasta que la splash termine
         webPreferences: {
             preload: path.join(__dirname, '../preload/controlPreload.js'),
             contextIsolation: true,
@@ -30,7 +52,6 @@ function createControlWindow() {
 
     controlWindow.loadFile(path.join(__dirname, '../renderer/control/index.html'));
 
-    // Si el operador cierra el panel de control, cerramos toda la aplicación
     controlWindow.on('closed', () => {
         controlWindow = null;
         if (projectionWindow) projectionWindow.close();
@@ -103,9 +124,27 @@ app.whenReady().then(() => {
     });
 
     initDatabases();
-    setupIpcHandlers(); 
+    setupIpcHandlers();
+
+    // 1. Mostrar splash primero
+    createSplashWindow();
+
+    // 2. Crear la ventana de control en segundo plano mientras la splash corre
     createControlWindow();
-    createProjectionWindow();
+
+    // 3. Tras 4 segundos, cerrar splash, mostrar control y LUEGO abrir proyección
+    setTimeout(() => {
+        if (splashWindow) {
+            splashWindow.close();
+            splashWindow = null;
+        }
+        if (controlWindow) {
+            controlWindow.show();
+            controlWindow.focus();
+        }
+        // La proyección se abre después para no aparecer detrás del splash
+        createProjectionWindow();
+    }, 4000);
 
     // --- MANEJADOR DE APERTURA/CIERRE DE PROYECCIÓN BAJO DEMANDA ---
     ipcMain.handle('projection:toggle', (event, accion) => {

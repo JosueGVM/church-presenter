@@ -6,10 +6,30 @@
     <title>Church Display - Control</title>
     <link rel="stylesheet" href="../common/global.css">
     <link rel="stylesheet" href="style.css">
-    <!-- El archivo CSS de la pestaña activa se inyectará aquí dinámicamente -->
     <link id="tab-stylesheet" rel="stylesheet" href="">
 </head>
 <body>
+    <!-- BARRA DE TÍTULO PERSONALIZADA -->
+    <div class="titlebar">
+        <div class="titlebar-drag">
+            <div class="titlebar-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/>
+                    <line x1="12" y1="17" x2="12" y2="21"/>
+                    <line x1="8" y1="21" x2="16" y2="21"/>
+                    <line x1="12" y1="7" x2="12" y2="13"/>
+                    <line x1="9" y1="10" x2="15" y2="10"/>
+                </svg>
+            </div>
+            <span class="titlebar-title">Church Display</span>
+        </div>
+        <div class="titlebar-controls">
+            <button class="titlebar-btn" id="tb-minimize" title="Minimizar">&#x2212;</button>
+            <button class="titlebar-btn" id="tb-maximize" title="Maximizar">&#x25A1;</button>
+            <button class="titlebar-btn close" id="tb-close" title="Cerrar">&#x2715;</button>
+        </div>
+    </div>
+
     <div class="app-container">
         <!-- Sidebar Fijo (Solo iconos SVG) -->
         <aside class="sidebar">
@@ -38,12 +58,11 @@
                 <img src="../assets/icons/themes.svg" alt="Temas">
             </button>
             
-             <!-- PESTAÑA DE ALERTAS RENOMBRADA (Usa alerts.svg) -->
             <button class="nav-btn" data-tab="alerts" title="Modo Avisos">
                 <img src="../assets/icons/alerts.svg" alt="Avisos / Alertas">
             </button>
 
-            <div class="sidebar-spacer"></div> <!-- Empuja la configuración al fondo -->
+            <div class="sidebar-spacer"></div>
             
             <button class="nav-btn" data-tab="settings" title="Configuración General">
                 <img src="../assets/icons/settings.svg" alt="Configuración">
@@ -52,11 +71,9 @@
 
         <!-- Área de Contenido Dinámico -->
         <main id="main-content" class="content-area">
-            <!-- Aquí se inyectará el HTML de la pestaña activa -->
         </main>
     </div>
 
-    <!-- Cargamos el script como módulo ES para permitir importaciones dinámicas -->
     <script type="module" src="script.js"></script>
 </body>
 </html>

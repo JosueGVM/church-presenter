@@ -36,9 +36,14 @@ window.api.alActualizarProyeccion((datos) => {
         if (datos.background.type === 'video') {
             bgImage.style.display = 'none';
             bgImage.src = '';
-            bgVideo.src = pathNormalizado;
-            bgVideo.style.display = 'block';
-            bgVideo.play().catch(err => console.error("Error al reproducir video de fondo:", err));
+            // Solo reiniciar el video si es uno distinto al que ya está corriendo
+            if (bgVideo.src !== pathNormalizado) {
+                bgVideo.src = pathNormalizado;
+                bgVideo.style.display = 'block';
+                bgVideo.play().catch(err => console.error("Error al reproducir video de fondo:", err));
+            } else {
+                bgVideo.style.display = 'block';
+            }
         } else if (datos.background.type === 'image') {
             bgVideo.style.display = 'none';
             bgVideo.pause();
@@ -62,43 +67,67 @@ window.api.alActualizarProyeccion((datos) => {
             document.body.style.backgroundColor = '#000000';
         }
 
-        // Estilos de tipografía
+        // Tipografía
         displayTexto.style.fontFamily = est.fontFamily || 'Segoe UI';
         displayTexto.style.fontSize = est.fontSize ? `${est.fontSize}vh` : '5vh';
         displayTexto.style.color = est.fontColor || '#ffffff';
         displayTexto.style.lineHeight = est.lineHeight || 1.4;
         displayTexto.style.letterSpacing = est.letterSpacing ? `${est.letterSpacing}px` : '0px';
-
         displayTexto.style.fontWeight = est.isBold ? 'bold' : 'normal';
         displayTexto.style.fontStyle = est.isItalic ? 'italic' : 'normal';
         displayTexto.style.textTransform = est.isUppercase ? 'uppercase' : 'none';
 
-        displayTexto.style.textShadow = est.textShadowColor ? `2px 2px 8px ${est.textShadowColor}` : '2px 2px 8px rgba(0,0,0,0.9)';
+        // Sombra con opacidad y difuminado configurables
+        const shadowHex = est.textShadowColor || '#000000';
+        const shadowOpacity = est.textShadowOpacity ?? 0.8;
+        const shadowBlur = est.textShadowBlur ?? 8;
+        const sNum = parseInt(shadowHex.replace('#', ''), 16);
+        const shadowRgba = `rgba(${sNum >> 16}, ${(sNum >> 8) & 0xFF}, ${sNum & 0xFF}, ${shadowOpacity})`;
+        let shadows = `2px 2px ${shadowBlur}px ${shadowRgba}`;
 
-        // Contorno (Stroke)
-        if (est.hasStroke) {
-            displayTexto.style.webkitTextStroke = `${est.strokeWidth}px ${est.strokeColor}`;
-        } else {
-            displayTexto.style.webkitTextStroke = '0px transparent';
+        // Glow
+        if (est.hasGlow && est.glowColor) {
+            const gb = est.glowBlur ?? 10;
+            shadows += `, 0 0 ${gb}px ${est.glowColor}, 0 0 ${gb * 2}px ${est.glowColor}`;
         }
+        displayTexto.style.textShadow = shadows;
 
-        // Caja de relleno de texto única (Bounding Box)
+        // Contorno
+        displayTexto.style.webkitTextStroke = est.hasStroke
+            ? `${est.strokeWidth}px ${est.strokeColor}`
+            : '0px transparent';
+
+        // Caja de relleno con padding configurable
         const textBox = document.getElementById('proj-text-box');
         if (textBox) {
             if (est.hasFillBox) {
-                const num = parseInt(est.fillBoxColorHex.replace("#", ""), 16);
-                const R = (num >> 16);
-                const G = (num >> 8 & 0x00FF);
-                const B = (num & 0x0000FF);
-                const rgbaColor = `rgba(${R}, ${G}, ${B}, ${est.fillBoxOpacity})`;
-
-                textBox.style.backgroundColor = rgbaColor;
-                textBox.style.padding = '15px 25px';
+                const fNum = parseInt(est.fillBoxColorHex.replace('#', ''), 16);
+                const fRgba = `rgba(${fNum >> 16}, ${(fNum >> 8) & 0xFF}, ${fNum & 0xFF}, ${est.fillBoxOpacity})`;
+                textBox.style.backgroundColor = fRgba;
+                textBox.style.padding = `${est.fillBoxPadding ?? 15}px`;
                 textBox.style.borderRadius = '8px';
             } else {
                 textBox.style.backgroundColor = 'transparent';
                 textBox.style.padding = '0';
             }
+        }
+
+        // Margen/padding de pantalla
+        const projTextOverlay = document.getElementById('proj-text-overlay');
+        if (projTextOverlay) {
+            const pad = est.textPadding ?? 40;
+            projTextOverlay.style.padding = `${pad}px`;
+        }
+
+        // Efectos de video de fondo
+        if (bgVideo) {
+            bgVideo.style.filter = `brightness(${est.videoBrightness ?? 100}%)`;
+            bgVideo.style.opacity = (est.videoOpacity ?? 100) / 100;
+            bgVideo.playbackRate = est.videoSpeed ?? 1;
+        }
+        if (bgImage) {
+            bgImage.style.filter = `brightness(${est.videoBrightness ?? 100}%)`;
+            bgImage.style.opacity = (est.videoOpacity ?? 100) / 100;
         }
 
         // --- LOGICA DE COMODATO DE TÍTULOS ---
@@ -174,6 +203,8 @@ window.api.alActualizarProyeccion((datos) => {
             displayTexto.textContent = datos.texto;
             if (datos.texto) {
                 displayTexto.classList.add('active');
+                // Auto-fit: reducir font-size hasta que el texto quepa sin desbordarse
+                fitTextToContainer(displayTexto);
             }
         }, 150);
     }
@@ -205,4 +236,32 @@ function clearActiveBackgrounds() {
     
     bgImage.style.display = 'none';
     bgImage.src = '';
+}
+
+// Auto-fit: reduce el font-size del elemento hasta que quepa dentro de su contenedor padre.
+// Parte del tamaño actual definido por el tema y baja de a 0.5vh hasta que entre.
+function fitTextToContainer(el) {
+    const container = document.getElementById('proj-text-overlay');
+    if (!el || !container) return;
+
+    // Leer el font-size actual como punto de partida (en px)
+    const computedSize = parseFloat(window.getComputedStyle(el).fontSize);
+    if (!computedSize) return;
+
+    // Convertir a vh para mantener consistencia con el sistema de temas
+    const vh = window.innerHeight / 100;
+    let currentVh = computedSize / vh;
+    const minVh = 1.5; // Nunca bajar de 1.5vh para mantener legibilidad
+
+    // Restablecer al tamaño del tema antes de medir
+    el.style.fontSize = `${currentVh}vh`;
+
+    // Reducir hasta que el texto no desborde el contenedor
+    while (
+        (el.scrollHeight > container.clientHeight || el.scrollWidth > container.clientWidth)
+        && currentVh > minVh
+    ) {
+        currentVh -= 0.5;
+        el.style.fontSize = `${currentVh}vh`;
+    }
 }
